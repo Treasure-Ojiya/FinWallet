@@ -1,0 +1,376 @@
+<section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0 mt-8">
+  <div class="flex flex-col md:flex-row gap-8 items-stretch">
+    <!-- Beneficiary List -->
+    <div
+      id="beneficiary"
+      class="w-full md:w-1/2 bg-[#EFEFEF] rounded-2xl p-6 border border-[#BFC5C9] shadow-md"
+    >
+      <div class="flex items-center gap-2 mb-4">
+        <h2 class="text-lg font-semibold text-[#0E0E10]">Beneficiaries</h2>
+      </div>
+
+      <form
+        [formGroup]="searchForm"
+        (ngSubmit)="onSearch()"
+        class="flex items-stretch w-full rounded-lg overflow-hidden border border-[#BFC5C9] focus-within:ring-2 focus-within:ring-[#1E4D3A]"
+      >
+        <input
+          type="text"
+          formControlName="query"
+          placeholder="Search beneficiaries..."
+          class="flex-1 px-4 py-3 text-sm focus:outline-none"
+        />
+
+        @if (searchForm.get("query")?.value) {
+          <button
+            type="button"
+            (click)="clearSearch()"
+            class="px-3 flex items-center justify-center text-[#9A9A9A] hover:text-[#0E0E10] transition"
+          >
+            ✕
+          </button>
+        }
+
+        <button
+          type="submit"
+          class="bg-[#134D3A] px-4 flex items-center justify-center hover:bg-[#0F3F30] transition"
+        >
+          <img src="/icons/search.svg" alt="Search" class="w-5 h-5" />
+        </button>
+      </form>
+
+      <div class="mt-4 space-y-2 max-h-96 overflow-y-auto">
+        @if (beneficiaries.length === 0) {
+          <p class="text-[#0E0E10] text-center py-4">
+            No beneficiaries added yet.
+          </p>
+        } @else {
+          <!-- In the beneficiary list section -->
+          @for (ben of beneficiaries; track ben.accountNumber + ben.bankCode) {
+            <div
+              class="p-3 bg-[#BFC5C9]/20 rounded-lg flex justify-between items-center cursor-pointer hover:bg-[#BFC5C9]/40 transition"
+              (click)="selectBeneficiary(ben)"
+            >
+              <div class="flex flex-col">
+                <span class="font-medium">{{ ben.accountName }}</span>
+                <span class="text-sm text-[#1E4D3A]">{{
+                  ben.accountNumber
+                }}</span>
+                <span class="text-xs text-[#9A9A9A]">{{ ben.bankName }}</span>
+              </div>
+              <span class="text-xs text-[#9A9A9A]">Click to use</span>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- Transfer Form -->
+    <div
+      id="transfer-input"
+      class="w-full md:w-1/2 bg-[#EFEFEF] rounded-2xl p-6 border border-[#BFC5C9] shadow-md"
+    >
+      <h2 class="text-lg font-semibold text-[#0E0E10] mb-4">Make Transfer</h2>
+
+      <form
+        [formGroup]="accountForm"
+        (ngSubmit)="makeTransfer()"
+        class="space-y-4"
+      >
+        <div>
+          <label class="text-[#3A3A3C] block mb-1">Account Number</label>
+          <input
+            type="text"
+            placeholder="Enter 10-digit Account Number..."
+            formControlName="accountNumber"
+            class="p-2 border border-[#9A9A9A] focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40 rounded-lg w-full"
+            [class.border-red-500]="
+              accountForm.get('accountNumber')?.invalid &&
+              accountForm.get('accountNumber')?.touched
+            "
+          />
+          @if (
+            accountForm.get("accountNumber")?.invalid &&
+            accountForm.get("accountNumber")?.touched
+          ) {
+            <span class="text-xs text-red-500 mt-1">
+              Please enter a valid 10-digit account number
+            </span>
+          }
+        </div>
+
+        <div class="border-b border-[#BFC5C9] pb-6">
+          <label class="text-[#3A3A3C] block mb-1">Select Bank</label>
+          <div
+            class="relative mt-1"
+            clickOutside
+            (clickOutside)="closeBankDropdown()"
+          >
+            <input
+              type="text"
+              placeholder="Search bank..."
+              class="w-full p-3 pr-10 border border-[#9A9A9A] rounded-lg focus:outline-none focus:border-[#1E4D3A] focus:ring-2 focus:ring-[#1E4D3A]/40"
+              [value]="selectedBank?.name || bankQuery"
+              (input)="onBankSearch($event)"
+              (focus)="bankOpen = true"
+            />
+            <img
+              src="/icons/chevron-down.svg"
+              class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 opacity-70 pointer-events-none"
+            />
+
+            @if (bankOpen) {
+              <div
+                class="absolute z-20 mt-1 w-full max-h-60 overflow-y-auto bg-white border border-[#BFC5C9] rounded-lg shadow-md"
+              >
+                @if (filteredBanks.length === 0) {
+                  <div class="p-3 text-sm text-[#9A9A9A]">No banks found</div>
+                } @else {
+                  @for (bank of filteredBanks; track bank.id) {
+                    <button
+                      type="button"
+                      class="w-full text-left px-4 py-3 text-sm hover:bg-[#EFEFEF] transition"
+                      (click)="selectBank(bank)"
+                    >
+                      {{ bank.name }}
+                    </button>
+                  }
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Resolved Account Name -->
+          @if (resolvedAccountName) {
+            <div
+              class="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg"
+            >
+              <span class="text-sm text-green-700 font-medium">
+                {{ resolvedAccountName }}
+              </span>
+            </div>
+          }
+
+          <div class="flex items-center justify-between mt-4">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-[#0E0E10]"
+                >Add as Beneficiary</span
+              >
+              <span class="text-xs text-[#9A9A9A]"
+                >Save this account for future transfers</span
+              >
+            </div>
+
+            <mat-slide-toggle
+              formControlName="saveAsBeneficiary"
+              color="primary"
+            ></mat-slide-toggle>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[#3A3A3C] block mb-1">Amount (₦)</label>
+          <input
+            type="text"
+            placeholder="Enter Amount..."
+            formControlName="amount"
+            class="p-2 border border-[#9A9A9A] focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40 rounded-lg w-full"
+            [class.border-red-500]="
+              accountForm.get('amount')?.invalid &&
+              accountForm.get('amount')?.touched
+            "
+          />
+          @if (
+            accountForm.get("amount")?.invalid &&
+            accountForm.get("amount")?.touched
+          ) {
+            <span class="text-xs text-red-500 mt-1">
+              @if (accountForm.get("amount")?.errors?.["required"]) {
+                Amount is required
+              } @else if (accountForm.get("amount")?.errors?.["min"]) {
+                Minimum amount is ₦100
+              }
+            </span>
+          }
+        </div>
+
+        <div>
+          <label class="text-[#3A3A3C] block mb-1">Narration</label>
+          <input
+            type="text"
+            placeholder="What's this for?..."
+            formControlName="narration"
+            class="p-2 border border-[#9A9A9A] focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40 rounded-lg w-full"
+            [class.border-red-500]="
+              accountForm.get('narration')?.invalid &&
+              accountForm.get('narration')?.touched
+            "
+          />
+          @if (
+            accountForm.get("narration")?.invalid &&
+            accountForm.get("narration")?.touched
+          ) {
+            <span class="text-xs text-red-500 mt-1">
+              Narration is required
+            </span>
+          }
+        </div>
+
+        <div>
+          <button
+            type="submit"
+            [disabled]="
+              accountForm.invalid ||
+              !selectedBank ||
+              !resolvedAccountName ||
+              isLoading
+            "
+            class="w-full bg-[#134D3A] text-[#EFEFEF] font-semibold rounded-lg p-3 hover:bg-[#0F3F30] transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            @if (isLoading) {
+              <span class="flex items-center justify-center gap-2">
+                <svg
+                  class="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Processing...
+              </span>
+            } @else {
+              Make Transfer
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Add this at the end of your transfer.html file, after the closing section tag -->
+@if (showPinModal) {
+  <app-pin-verification
+    (pinConfirmed)="onPinConfirmed($event)"
+    (cancelled)="showPinModal = false; pendingTransferData = null"
+  ></app-pin-verification>
+}
+
+<!-- <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0 mt-8">
+  <div class="flex flex-col md:flex-row gap-8 items-stretch">
+    <div class="w-full md:w-1/2 card">
+      <div class="flex items-center gap-2 mb-4">
+        <h2 class="text-lg font-semibold text-almost-black">Beneficiaries</h2>
+      </div>
+
+      <form
+        [formGroup]="searchForm"
+        (ngSubmit)="onSearch()"
+        class="flex items-stretch w-full rounded-lg overflow-hidden border border-platinum focus-within:ring-2 focus-within:ring-deep-forest"
+      >
+        <input
+          type="text"
+          formControlName="query"
+          placeholder="Search beneficiaries..."
+          class="flex-1 px-4 py-3 text-sm focus:outline-none"
+        />
+
+        @if (searchForm.get("query")?.value) {
+          <button
+            type="button"
+            (click)="clearSearch()"
+            class="px-3 flex items-center justify-center text-stone hover:text-almost-black transition"
+          >
+            ✕
+          </button>
+        }
+
+        <button
+          type="submit"
+          class="bg-deep-forest px-4 flex items-center justify-center hover:bg-deep-forest/80 transition"
+        >
+          <img src="/icons/search.svg" alt="Search" class="w-5 h-5" />
+        </button>
+      </form>
+
+      <div class="mt-4">
+        <p class="text-almost-black">No beneficiaries added yet.</p>
+      </div>
+    </div>
+
+    <div class="w-full md:w-1/2 card">
+      <h2 class="text-lg font-semibold text-almost-black mb-4">
+        Make Transfer
+      </h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-warm-gray">Account Number</label>
+          <input
+            type="text"
+            placeholder="Enter Account Number..."
+            class="form-input"
+          />
+        </div>
+
+        <div class="border-b border-platinum pb-6">
+          <label class="text-warm-gray">Select Bank</label>
+
+          <div class="relative">
+            <select
+              class="w-full bg-off-white p-3 pr-10 border border-stone rounded-lg text-almost-black focus:outline-none focus:border-deep-forest focus:ring-2 focus:ring-deep-forest/40"
+              [disabled]="banks.length === 0"
+              (change)="onBankSelect($event)"
+            >
+              @if (banks.length === 0) {
+                <option selected disabled class="text-stone">
+                  Loading banks…
+                </option>
+              } @else {
+                <option value="" selected disabled class="text-stone">
+                  Choose a bank
+                </option>
+                @for (bank of banks; track bank.id) {
+                  <option [value]="bank.code" class="text-almost-black">
+                    {{ bank.name }}
+                  </option>
+                }
+              }
+            </select>
+
+            <img
+              src="/icons/chevron-down.svg"
+              alt=""
+              class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none opacity-70"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-warm-gray">Amount</label>
+          <input type="text" placeholder="Enter Amount..." class="form-input" />
+        </div>
+
+        <div>
+          <label class="text-warm-gray">Narration</label>
+          <input type="text" placeholder="Narration..." class="form-input" />
+        </div>
+
+        <button class="btn-primary w-full mt-4">Transfer Now</button>
+      </div>
+    </div>
+  </div>
+</section> -->

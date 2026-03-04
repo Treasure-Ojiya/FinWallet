@@ -1,0 +1,101 @@
+@use "@angular/material" as mat;
+@use "sass:color";
+
+// Define your custom color palettes
+$almost-black: #0e0e10;
+$warm-gray: #3a3a3c;
+$stone: #9a9a9a;
+$off-white: #efefef;
+$platinum: #bfc5c9;
+$deep-forest: #1e4d3a;
+$muted-red: #b24a4a; // For errors
+$amber: #d9a441; // For warnings
+
+// Create Material 3 compatible palettes
+// These map your colors to Material color roles
+html {
+  // Set color scheme
+  color-scheme: light;
+
+  @include mat.theme(
+    (
+      color: (
+        // Primary - Deep Forest for main actions
+        primary: (
+            main: $deep-forest,
+            lighter: color.adjust($deep-forest, $lightness: 15%),
+            darker: color.adjust($deep-forest, $lightness: -10%)
+          ),
+
+        // Secondary/Tertiary - Platinum for accents
+        tertiary: (
+            main: $platinum,
+            lighter: color.adjust($platinum, $lightness: 10%),
+            darker: color.adjust($platinum, $lightness: -10%)
+          ),
+
+        // Error states
+        error: (
+            main: $muted-red,
+            lighter: color.adjust($muted-red, $lightness: 15%),
+            darker: color.adjust($muted-red, $lightness: -10%)
+          ),
+
+        // Neutral surfaces
+        neutral: (main: $off-white, variant: $stone),
+      ),
+      typography: (
+        plain-family: "Roboto, sans-serif",
+        brand-family: "Roboto, sans-serif",
+        bold-weight: 700,
+        medium-weight: 500,
+        regular-weight: 400,
+      ),
+      density: 0,
+    )
+  );
+}
+
+body {
+  background-color: $off-white;
+  color: $warm-gray;
+  margin: 0;
+  font-family: Roboto, sans-serif;
+}
+
+// Define CSS variables for your custom colors
+:root {
+  // Your exact color palette as CSS variables
+  --almost-black: #0e0e10;
+  --warm-gray: #3a3a3c;
+  --stone: #9a9a9a;
+  --off-white: #efefef;
+  --platinum: #bfc5c9;
+  --deep-forest: #1e4d3a;
+  --muted-red: #b24a4a;
+  --amber: #d9a441;
+
+  // Map Material roles to your colors for easier use
+  // --mat-sys-primary: var(--deep-forest);
+  // --mat-sys-on-primary: var(--off-white);
+  // --mat-sys-primary-container: #{rgba(#1e4d3a, 0.1)};
+  // --mat-sys-on-primary-container: var(--deep-forest);
+
+  // --mat-sys-secondary: var(--warm-gray);
+  // --mat-sys-on-secondary: var(--off-white);
+  // --mat-sys-secondary-container: #{rgba(#3a3a3c, 0.1)};
+
+  // --mat-sys-tertiary: var(--platinum);
+  // --mat-sys-on-tertiary: var(--almost-black);
+
+  // --mat-sys-surface: var(--off-white);
+  // --mat-sys-on-surface: var(--almost-black);
+  // --mat-sys-surface-variant: var(--platinum);
+  // --mat-sys-on-surface-variant: var(--warm-gray);
+
+  // --mat-sys-error: var(--muted-red);
+  // --mat-sys-on-error: var(--off-white);
+
+  // --mat-sys-outline: var(--stone);
+  // --mat-sys-outline-variant: var(--platinum);
+}

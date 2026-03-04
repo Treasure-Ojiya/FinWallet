@@ -1,0 +1,6 @@
+export const environment = {
+  production: false,
+
+  authUrl: 'http://66.29.143.172:5000',
+  baseUrl: 'http://66.29.143.172:5000/api/v1',
+};

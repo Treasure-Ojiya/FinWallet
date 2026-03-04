@@ -1,0 +1,123 @@
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+>
+  <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-semibold text-[#0E0E10]">
+        Change Transaction PIN
+      </h3>
+      <button (click)="onClose()" class="text-[#9A9A9A] hover:text-[#0E0E10]">
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="pinForm" (ngSubmit)="onSubmit()">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-[#3A3A3C] mb-1"
+            >Current PIN</label
+          >
+          <input
+            type="password"
+            formControlName="oldPin"
+            maxlength="4"
+            placeholder="****"
+            class="w-full px-4 py-3 text-center text-2xl tracking-widest border border-[#9A9A9A] rounded-lg focus:outline-none focus:border-[#1E4D3A]"
+            inputmode="numeric"
+            pattern="[0-9]*"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-[#3A3A3C] mb-1"
+            >New PIN</label
+          >
+          <input
+            type="password"
+            formControlName="newPin"
+            maxlength="4"
+            placeholder="****"
+            class="w-full px-4 py-3 text-center text-2xl tracking-widest border border-[#9A9A9A] rounded-lg focus:outline-none focus:border-[#1E4D3A]"
+            inputmode="numeric"
+            pattern="[0-9]*"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-[#3A3A3C] mb-1"
+            >Confirm New PIN</label
+          >
+          <input
+            type="password"
+            formControlName="confirmPin"
+            maxlength="4"
+            placeholder="****"
+            class="w-full px-4 py-3 text-center text-2xl tracking-widest border border-[#9A9A9A] rounded-lg focus:outline-none focus:border-[#1E4D3A]"
+            inputmode="numeric"
+            pattern="[0-9]*"
+          />
+        </div>
+
+        @if (
+          pinForm.errors?.["mismatch"] && pinForm.get("confirmPin")?.touched
+        ) {
+          <p class="text-xs text-red-600">New PINs do not match</p>
+        }
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button
+          type="button"
+          (click)="onClose()"
+          class="flex-1 px-4 py-2 border border-[#9A9A9A] rounded-lg text-[#0E0E10] hover:bg-[#EFEFEF] transition"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="pinForm.invalid || isLoading"
+          class="flex-1 px-4 py-2 bg-[#134D3A] text-white rounded-lg hover:bg-[#0F3F30] transition disabled:opacity-50"
+        >
+          @if (isLoading) {
+            <span class="flex items-center justify-center">
+              <svg
+                class="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            </span>
+          } @else {
+            Change PIN
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

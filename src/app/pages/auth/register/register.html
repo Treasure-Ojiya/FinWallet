@@ -1,0 +1,266 @@
+<main class="min-h-screen grid place-items-center">
+  <div
+    class="border border-[#BFC5C9] rounded-lg p-4 w-full max-w-md shadow-md shadow-[#1E4D3A]/20"
+  >
+    <form
+      [formGroup]="registerForm"
+      (ngSubmit)="onRegister()"
+      class="flex flex-col gap-4"
+    >
+      <!-- Title -->
+      <div class="text-center">
+        <h3 class="text-[#0E0E10] font-bold text-lg">Create Account</h3>
+      </div>
+
+      <!-- Email -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[#3A3A3C]">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+          [class.border-red-500]="
+            registerForm.get('email')?.invalid &&
+            registerForm.get('email')?.touched
+          "
+        />
+        @if (
+          registerForm.get("email")?.invalid &&
+          registerForm.get("email")?.touched
+        ) {
+          <div class="text-red-500 text-sm">
+            @if (registerForm.get("email")?.errors?.["required"]) {
+              <span>Email is required</span>
+            }
+            @if (registerForm.get("email")?.errors?.["email"]) {
+              <span>Please enter a valid email</span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-2">
+        <!-- First Name -->
+        <div class="flex flex-col gap-2 flex-1">
+          <label class="text-[#3A3A3C]">Firstname</label>
+          <input
+            type="text"
+            formControlName="firstName"
+            class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+            [class.border-red-500]="
+              registerForm.get('firstName')?.invalid &&
+              registerForm.get('firstName')?.touched
+            "
+          />
+          @if (
+            registerForm.get("firstName")?.invalid &&
+            registerForm.get("firstName")?.touched
+          ) {
+            <div class="text-red-500 text-sm">
+              @if (registerForm.get("firstName")?.errors?.["required"]) {
+                <span>First name is required</span>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Last Name -->
+        <div class="flex flex-col gap-2 flex-1">
+          <label class="text-[#3A3A3C]">Lastname</label>
+          <input
+            type="text"
+            formControlName="lastName"
+            class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+            [class.border-red-500]="
+              registerForm.get('lastName')?.invalid &&
+              registerForm.get('lastName')?.touched
+            "
+          />
+          @if (
+            registerForm.get("lastName")?.invalid &&
+            registerForm.get("lastName")?.touched
+          ) {
+            <div class="text-red-500 text-sm">
+              @if (registerForm.get("lastName")?.errors?.["required"]) {
+                <span>Last name is required</span>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[#3A3A3C]">Phone Number</label>
+        <input
+          type="tel"
+          formControlName="phoneNumber"
+          placeholder="08147636789"
+          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+          [class.border-red-500]="
+            registerForm.get('phoneNumber')?.invalid &&
+            registerForm.get('phoneNumber')?.touched
+          "
+        />
+        @if (
+          registerForm.get("phoneNumber")?.invalid &&
+          registerForm.get("phoneNumber")?.touched
+        ) {
+          <div class="text-red-500 text-sm">
+            @if (registerForm.get("phoneNumber")?.errors?.["required"]) {
+              <span>Phone number is required</span>
+            }
+            @if (registerForm.get("phoneNumber")?.errors?.["pattern"]) {
+              <span>Please enter a valid 11-digit phone number</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[#3A3A3C]">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+          [class.border-red-500]="
+            registerForm.get('password')?.invalid &&
+            registerForm.get('password')?.touched
+          "
+        />
+
+        <!-- Password error messages -->
+        @if (registerForm.get("password")?.touched) {
+          <div class="text-red-500 text-sm space-y-1">
+            @for (error of passwordErrors; track error) {
+              <div class="flex items-start gap-1">
+                <span class="text-xs">•</span>
+                <span>{{ error }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Password requirements checklist -->
+        <div
+          class="bg-gray-50 p-3 rounded-lg text-xs mt-1 border border-gray-200"
+        >
+          <p class="font-medium text-gray-700 mb-2">Password must contain:</p>
+          <ul class="space-y-1.5">
+            <li
+              class="flex items-center gap-2"
+              [class.text-green-600]="hasUpperCase"
+            >
+              <span class="text-sm">{{ hasUpperCase ? "✓" : "○" }}</span>
+              <span class="text-gray-600" [class.text-green-600]="hasUpperCase"
+                >Uppercase letter (A-Z)</span
+              >
+            </li>
+            <li
+              class="flex items-center gap-2"
+              [class.text-green-600]="hasLowerCase"
+            >
+              <span class="text-sm">{{ hasLowerCase ? "✓" : "○" }}</span>
+              <span class="text-gray-600" [class.text-green-600]="hasLowerCase"
+                >Lowercase letter (a-z)</span
+              >
+            </li>
+            <li
+              class="flex items-center gap-2"
+              [class.text-green-600]="hasNumeric"
+            >
+              <span class="text-sm">{{ hasNumeric ? "✓" : "○" }}</span>
+              <span class="text-gray-600" [class.text-green-600]="hasNumeric"
+                >Number (0-9)</span
+              >
+            </li>
+            <li
+              class="flex items-center gap-2"
+              [class.text-green-600]="hasSpecial"
+            >
+              <span class="text-sm">{{ hasSpecial ? "✓" : "○" }}</span>
+              <span class="text-gray-600" [class.text-green-600]="hasSpecial"
+                >Special character (@, !, #, etc.)</span
+              >
+            </li>
+            <li
+              class="flex items-center gap-2"
+              [class.text-green-600]="hasMinLength"
+            >
+              <span class="text-sm">{{ hasMinLength ? "✓" : "○" }}</span>
+              <span class="text-gray-600" [class.text-green-600]="hasMinLength"
+                >Minimum 8 characters</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[#3A3A3C]">Confirm Password</label>
+        <input
+          type="password"
+          formControlName="confirmPassword"
+          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+          [class.border-red-500]="
+            registerForm.get('confirmPassword')?.touched &&
+            (registerForm.get('confirmPassword')?.invalid || passwordMismatch)
+          "
+        />
+        @if (
+          registerForm.get("confirmPassword")?.touched &&
+          (registerForm.get("confirmPassword")?.invalid || passwordMismatch)
+        ) {
+          <div class="text-red-500 text-sm">
+            @if (registerForm.get("confirmPassword")?.errors?.["required"]) {
+              <span>Please confirm your password</span>
+            }
+            @if (passwordMismatch) {
+              <span>Passwords do not match</span>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Submit Button with Loading State -->
+      <div>
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || loader"
+          class="w-full text-[#EFEFEF] bg-[#1E4D3A] font-semibold rounded-lg p-2 cursor-pointer hover:text-[#1E4D3A] hover:bg-[#BFC5C9] transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          @if (loader) {
+            <span>Registering...</span>
+          } @else {
+            <span>Register</span>
+          }
+        </button>
+      </div>
+
+      <!-- Login link -->
+      <div class="text-center">
+        <p class="auth-link text-[#3A3A3C] text-sm font-medium">
+          Already have an account?
+          <a
+            routerLink="/auth/login"
+            class="text-[#3A3A3C] hover:text-[#1E4D3A] font-semibold text-sm"
+          >
+            Login
+          </a>
+        </p>
+      </div>
+
+      <!-- Form Summary Errors -->
+      @if (
+        registerForm.errors?.["passwordMismatch"] &&
+        registerForm.get("confirmPassword")?.touched
+      ) {
+        <div class="text-red-500 text-sm text-center font-medium">
+          ⚠️ Password and Confirm Password do not match
+        </div>
+      }
+    </form>
+  </div>
+</main>

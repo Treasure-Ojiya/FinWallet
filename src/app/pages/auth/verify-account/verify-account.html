@@ -1,0 +1,65 @@
+<main class="min-h-screen grid place-items-center">
+  <div
+    class="border border-[#BFC5C9] rounded-lg p-4 w-full max-w-md shadow-md shadow-[#1E4D3A]/20"
+  >
+    <form
+      [formGroup]="otpForm"
+      (ngSubmit)="onVerify()"
+      class="flex flex-col gap-4"
+    >
+      <!-- Title -->
+      <div class="text-center">
+        <h3 class="text-[#0E0E10] font-bold text-lg">Verify Your Account</h3>
+      </div>
+
+      <!-- Hint -->
+      <p class="text-center text-[#3A3A3C] text-sm">
+        Enter the 6-digit OTP sent to your email
+      </p>
+
+      <div>
+        <label class="text-[#3A3A3C]">Email</label>
+        <input
+          type="email"
+          formControlName="email"
+          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+        />
+      </div>
+
+      <!-- OTP Input -->
+      <div class="flex flex-col gap-2">
+        <label class="text-[#3A3A3C]">OTP</label>
+        <input
+          type="text"
+          maxlength="6"
+          inputmode="numeric"
+          formControlName="otp"
+          class="p-2 text-center tracking-widest text-lg border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+        />
+      </div>
+
+      <!-- Submit -->
+      <div>
+        <button
+          type="submit"
+          class="w-full text-[#EFEFEF] bg-[#1E4D3A] font-semibold rounded-lg p-2 cursor-pointer hover:text-[#1E4D3A] hover:bg-[#BFC5C9] transition-colors duration-300"
+        >
+          Verify
+        </button>
+      </div>
+
+      <!-- Resend -->
+      <div class="text-center">
+        <p class="auth-link text-[#3A3A3C] text-sm font-medium">
+          Didn’t receive OTP?
+          <a
+            routerLink="/auth/resend-otp"
+            class="text-[#3A3A3C] hover:text-[#1E4D3A] font-semibold text-sm cursor-pointer"
+          >
+            Resend OTP
+          </a>
+        </p>
+      </div>
+    </form>
+  </div>
+</main>

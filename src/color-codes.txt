@@ -1,0 +1,124 @@
+#EFEFEF - Background
+
+1. Primary Colors – Structure & Foundation
+Almost Black — #0E0E10
+
+Use for:
+
+App header / navigation bar / sidebar
+
+Key containers for sensitive data (balances, portfolio summaries)
+
+Primary headings and titles (if you want maximum contrast)
+
+Why:
+Dark, almost-black backgrounds exude authority and seriousness, making your app feel institutional.
+
+Warm Gray — #3A3A3C
+
+Use for:
+
+Secondary containers / cards / side panels
+
+Subheadings and labels
+
+Body text for charts or tables (for better readability than pure black)
+
+Why:
+Warm gray keeps things less harsh than pure black, improving readability and user comfort.
+
+2. Secondary Colors – Support & Hierarchy
+Stone — #9A9A9A
+
+Use for:
+
+Form labels, helper text, and metadata
+
+Table borders, dividers, subtle lines
+
+Disabled buttons and inactive icons
+
+Why:
+Stone is muted and unobtrusive, giving a sense of structure without distraction.
+
+Off-White — #EFEFEF
+
+Use for:
+
+Main app background
+
+Card backgrounds and light panels
+
+Input fields and modal overlays
+
+Why:
+Keeps the interface airy and readable, perfect for data-heavy UIs.
+
+3. Accent Colors – Emphasis & Premium Feel
+Platinum — #BFC5C9
+
+Use for:
+
+Highlighted text (metrics, key values)
+
+Borders around important cards or buttons
+
+Subtle hover effects
+
+Icon backgrounds
+
+Why:
+It’s premium but subtle, signaling importance without loudness.
+
+Deep Forest — #1E4D3A
+
+Use for:
+
+Positive indicators (balances, profits, trends)
+
+Primary call-to-action buttons
+
+Active tabs, selected states, or key icons
+
+Why:
+Dark green evokes wealth, growth, and financial confidence, ideal for actionable or positive data points.
+
+4. Status Colors (Optional)
+
+Error / Negative: Muted red (#B24A4A) for failed transactions or declines
+
+Warning / Neutral alerts: Amber (#D9A441) sparingly
+
+Use only when necessary — Executive Minimal is calm and controlled.
+
+5. Buttons & Interactive Elements
+Type	Background	Text	Use
+Primary	Deep Forest #1E4D3A	Off-White #EFEFEF	Main actions like Transfer, Invest
+Secondary	Off-White #EFEFEF	Almost Black #0E0E10	Secondary actions, navigation
+Disabled	Stone #9A9A9A	Warm Gray #3A3A3C	Unavailable actions
+Destructive	Muted Red	Off-White	Delete / cancel actions
+6. Text Color Hierarchy
+
+Headings: Almost Black #0E0E10
+
+Subheadings / Labels: Warm Gray #3A3A3C
+
+Body Text: Stone #9A9A9A
+
+Highlights / Key Metrics: Platinum #BFC5C9 or Deep Forest #1E4D3A
+
+7. Charts & Data Visualization
+
+Background: Off-White #EFEFEF
+
+Primary Data: Deep Forest #1E4D3A
+
+Secondary / Comparative Data: Warm Gray #3A3A3C
+
+Borders / Gridlines: Stone #9A9A9A
+
+Highlight / Trend Up: Deep Forest #1E4D3A
+
+Trend Down: Muted Red (optional)
+
+Keep it low-saturation — minimal, elegant, professional.

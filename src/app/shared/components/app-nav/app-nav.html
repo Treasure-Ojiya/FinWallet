@@ -1,0 +1,131 @@
+<nav class="sticky top-0 z-50 bg-[#0E0E10] shadow-md shadow-[#1E4D3A]/20">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="text-[#EFEFEF] text-2xl font-bold tracking-wide">FinWallet</div>
+
+    <!-- Desktop Nav -->
+    <ul class="hidden md:flex items-center gap-8 text-[#BFC5C9] font-medium">
+      <li
+        routerLink="/overview"
+        routerLinkActive="text-[#EFEFEF] border-b-2 border-[#1E4D3A]"
+        class="cursor-pointer pb-1 hover:text-[#EFEFEF] transition"
+      >
+        Overview
+      </li>
+
+      <li
+        routerLink="/transactions"
+        routerLinkActive="text-[#EFEFEF] border-b-2 border-[#1E4D3A]"
+        class="cursor-pointer pb-1 hover:text-[#EFEFEF] transition"
+      >
+        Transactions
+      </li>
+
+      <li
+        routerLink="/bill-payments"
+        routerLinkActive="text-[#EFEFEF] border-b-2 border-[#1E4D3A]"
+        class="cursor-pointer pb-1 hover:text-[#EFEFEF] transition"
+      >
+        Bill Payments
+      </li>
+    </ul>
+
+    <!-- Right Section -->
+    <div class="flex items-center gap-4">
+      <!-- Desktop User -->
+      <h1 class="hidden md:block text-lg font-semibold text-[#EFEFEF]">
+        Hello {{ userName }}
+      </h1>
+
+      <!-- Profile Dropdown -->
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleProfile(); $event.stopPropagation()"
+          class="focus:outline-none"
+        >
+          <img
+            src="/icons/profile-1.svg"
+            alt="Profile"
+            class="w-10 h-10 rounded-full ring-2 ring-[#1E4D3A]/40 hover:ring-[#1E4D3A] transition"
+          />
+        </button>
+
+        <!-- Animated Dropdown -->
+        <div
+          class="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-xl overflow-hidden z-50 transition-all duration-200 ease-out"
+          [class.opacity-0]="!profileOpen"
+          [class.scale-95]="!profileOpen"
+          [class.pointer-events-none]="!profileOpen"
+        >
+          <a
+            routerLink="/account-details"
+            class="block px-4 py-3 text-sm text-[#0E0E10] hover:bg-[#EFEFEF] transition"
+          >
+            Account Details
+          </a>
+
+          <button
+            (click)="logout()"
+            class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-[#EFEFEF] transition"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Hamburger (Mobile) -->
+      <button
+        class="md:hidden focus:outline-none"
+        (click)="toggleMobileNav(); $event.stopPropagation()"
+      >
+        <img src="/icons/hamburger.svg" alt="Menu" class="w-8 h-8" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <!-- Mobile Backdrop -->
+  <div
+    class="fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 md:hidden"
+    [class.opacity-0]="!mobileNavOpen"
+    [class.pointer-events-none]="!mobileNavOpen"
+  ></div>
+
+  <!-- Mobile Drawer -->
+  <div
+    class="fixed top-0 right-0 h-full w-64 bg-[#0E0E10] z-50 md:hidden transform transition-transform duration-300 ease-in-out"
+    [class.translate-x-full]="!mobileNavOpen"
+    [class.translate-x-0]="mobileNavOpen"
+  >
+    <div class="px-6 py-6 flex flex-col gap-6">
+      <h1 class="text-lg font-semibold text-[#EFEFEF]">Hello {{ userName }}</h1>
+
+      <ul class="flex flex-col gap-4 text-[#BFC5C9] font-medium">
+        <li
+          routerLink="/overview"
+          (click)="toggleMobileNav()"
+          class="cursor-pointer hover:text-[#EFEFEF]"
+        >
+          Overview
+        </li>
+
+        <li
+          routerLink="/transactions"
+          (click)="toggleMobileNav()"
+          class="cursor-pointer hover:text-[#EFEFEF]"
+        >
+          Transactions
+        </li>
+
+        <li
+          routerLink="/bill-payments"
+          (click)="toggleMobileNav()"
+          class="cursor-pointer hover:text-[#EFEFEF]"
+        >
+          Bill Payments
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

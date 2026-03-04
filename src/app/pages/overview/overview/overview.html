@@ -1,0 +1,309 @@
+<!-- <main class="max-w-6xl justify-center">
+  <section
+    class="bg-[#EFEFEF] border border-[#BFC5C9] shadow-md shadow-[#1E4D3A]/20"
+  >
+    <div class="flex items-center justify-between pt-5 pb-2 px-4">
+      <div class="flex flex-col gap-1">
+        <h1 class="text-2xl font-bold text-[#0E0E10]">Hello {{ userName }}!</h1>
+
+        <p class="text-[#9A9A9A] italic">
+          Perform transactions, view your balance, and manage your finances with
+          ease.
+        </p>
+      </div>
+
+      <div class="relative">
+        <button
+          type="button"
+          (click)="toggleProfile()"
+          class="flex items-center focus:outline-none"
+        >
+          <img
+            src="/icons/profile-1.svg"
+            alt="Profile"
+            class="w-10 h-10 rounded-full"
+          />
+        </button>
+
+        @if (profileOpen) {
+          <div
+            class="absolute right-0 mt-2 w-48 bg-white border border-[#BFC5C9] rounded-md shadow-lg z-50"
+          >
+            <a
+              routerLink="/account-details"
+              class="block px-4 py-2 text-sm text-[#0E0E10] hover:bg-[#EFEFEF]"
+            >
+              Account Details
+            </a>
+
+            <button
+              (click)="logout()"
+              class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-[#EFEFEF]"
+            >
+              Logout
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="px-7 mt-6">
+    <div
+      class="flex items-center justify-between bg-[#134D3A] h-40 py-4 px-7 rounded-2xl"
+      routerLink="/wallet-details"
+    >
+      <div id="balance-container">
+        <div class="flex items-center gap-2">
+          <h2 class="text-lg font-semibold text-[#EFEFEF]">Current Balance</h2>
+          <button
+            type="button"
+            class="focus:outline-none"
+            (click)="toggleBalance($event)"
+          >
+            <img
+              [src]="
+                showBalance
+                  ? '/icons/view-white.svg'
+                  : '/icons/view-hide-white.svg'
+              "
+              alt=""
+              class="w-6 h-6"
+            />
+          </button>
+        </div>
+        <p class="text-3xl font-bold mt-2 text-[#EFEFEF]">
+          {{
+            showBalance ? (balance | currency: "NGN" : "symbol") : "₦ ••••••"
+          }}
+        </p>
+      </div>
+
+      <div class="flex gap-7">
+        <div id="top-up">
+          <div
+            class="bg-[#BFC5C9]/20 rounded-full w-10 h-12 flex items-center justify-center"
+          >
+            <img src="/icons/top-up.svg" alt="Top Up" class="w-5 h-5" />
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-[#EFEFEF]">Top-Up</h2>
+          </div>
+        </div>
+
+        <div id="send">
+          <div
+            class="bg-[#BFC5C9]/20 rounded-full w-10 h-12 flex items-center justify-center"
+          >
+            <img src="/icons/send.svg" alt="Send" class="w-5 h-5" />
+          </div>
+          <div>
+            <h2 class="text-lg font-semibold text-[#EFEFEF]">Send</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 px-7">
+    <div
+      id="balance-card"
+      routerLink="/wallet-details"
+      class="bg-[#EFEFEF] rounded-2xl p-6 h-40 border border-[#BFC5C91a] shadow-md cursor-pointer hover:shadow-lg transition"
+    >
+      <div class="flex items-center gap-2">
+        <h2 class="text-lg font-semibold text-[#0E0E10]">Current Balance</h2>
+        <button
+          type="button"
+          class="focus:outline-none"
+          (click)="toggleBalance($event)"
+        >
+          <img
+            [src]="showBalance ? '/icons/view.svg' : '/icons/view-hide.svg'"
+            alt=""
+            class="w-6 h-6"
+          />
+        </button>
+      </div>
+      <p class="text-3xl font-bold mt-2 text-[#0E0E10]">
+        {{ showBalance ? (balance | currency: "NGN" : "symbol") : "₦ ••••••" }}
+      </p>
+    </div>
+
+    <div
+      id="top-up"
+      routerLink="/top-up"
+      class="bg-[#134D3A] rounded-2xl p-6 h-40 border border-[#BFC5C9] shadow-md"
+    >
+      <div class="flex flex-col gap-7">
+        <div
+          class="bg-[#BFC5C9]/20 rounded-md w-10 h-12 flex items-center justify-center"
+        >
+          <img src="/icons/top-up.svg" alt="Top Up" class="w-5 h-5" />
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-[#EFEFEF]">Top Up</h2>
+          <p class="text-[#9A9A9A] text-sm italic">
+            Top up your account instantly
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="send"
+      routerLink="/transfer"
+      class="bg-[#0E0E10] rounded-2xl p-6 h-40 border border-[#BFC5C9] shadow-md shadow-[#1E4D3A]/20"
+    >
+      <div class="flex flex-col gap-7">
+        <div
+          class="bg-[#BFC5C9]/20 rounded-md w-10 h-12 flex items-center justify-center"
+        >
+          <img src="/icons/send.svg" alt="Send" class="w-5 h-5" />
+        </div>
+        <div>
+          <h2 class="text-lg font-semibold text-[#EFEFEF]">Send Money</h2>
+          <p class="text-[#9A9A9A] text-sm italic">
+            Send money with ease to anyone
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+</main> -->
+
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-0">
+  <section class="mt-8">
+    <!-- Balance Card -->
+    <div
+      class="relative flex flex-col md:flex-row md:items-center md:justify-between bg-[#134D3A] rounded-2xl p-6 md:p-8 cursor-pointer hover:shadow-xl transition"
+      routerLink="/wallet-details"
+    >
+      <!-- Balance Info -->
+      <div>
+        <div class="flex items-center gap-2">
+          <h2 class="text-sm uppercase tracking-wide text-[#EFEFEF]/80">
+            Current Balance
+          </h2>
+
+          <!-- Prevent card click -->
+          <button
+            type="button"
+            class="focus:outline-none"
+            (click)="toggleBalance($event); $event.stopPropagation()"
+          >
+            <img
+              [src]="
+                showBalance
+                  ? '/icons/view-white.svg'
+                  : '/icons/view-hide-white.svg'
+              "
+              alt=""
+              class="w-5 h-5 opacity-80 hover:opacity-100 transition"
+            />
+          </button>
+        </div>
+
+        <p class="text-3xl md:text-4xl font-bold mt-3 text-[#EFEFEF]">
+          {{
+            showBalance ? (balance | currency: "NGN" : "symbol") : "₦ ••••••"
+          }}
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-8 mt-6 md:mt-0" (click)="$event.stopPropagation()">
+        <!-- Top Up -->
+        <button
+          routerLink="/top-up"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="bg-[#BFC5C9]/20 rounded-xl w-12 h-12 flex items-center justify-center group-hover:bg-[#BFC5C9]/30 transition"
+          >
+            <img src="/icons/top-up.svg" alt="Top Up" class="w-5 h-5" />
+          </div>
+          <span class="text-sm font-medium text-[#EFEFEF]"> Top-Up </span>
+        </button>
+
+        <!-- Send -->
+        <button
+          routerLink="/transfer"
+          class="flex flex-col items-center gap-2 group"
+        >
+          <div
+            class="bg-[#BFC5C9]/20 rounded-xl w-12 h-12 flex items-center justify-center group-hover:bg-[#BFC5C9]/30 transition"
+          >
+            <img src="/icons/send.svg" alt="Send" class="w-5 h-5" />
+          </div>
+          <span class="text-sm font-medium text-[#EFEFEF]"> Send </span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-10 max-w-3xl mx-auto">
+    <div
+      class="grid grid-cols-2 gap-6 bg-[#BFC5C9]/20 rounded-2xl p-6 justify-items-center text-center"
+    >
+      <div>
+        <div
+          class="bg-[#1E4D3A]/50 rounded-full p-4 flex flex-col items-center justify-center"
+        >
+          <img src="/icons/phone-white.svg" alt="Analytics" class="w-6 h-6" />
+        </div>
+        <h3 class="text-sm font-semibold text-[#0E0E10] mt-2">Airtime</h3>
+      </div>
+
+      <div>
+        <div
+          class="bg-[#1E4D3A]/50 rounded-full p-4 flex flex-col items-center justify-center"
+        >
+          <img src="/icons/electricity-white.svg" alt="" class="w-6 h-6" />
+        </div>
+        <h3 class="text-sm font-semibold text-[#0E0E10] mt-2">Electricity</h3>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-10 px-2">
+    <h1 class="text-[#0E0E10] text-lg font-bold mb-4">Recent Transactions</h1>
+
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse min-w-150">
+        <thead>
+          <tr>
+            <th
+              class="text-left p-2 font-semibold text-[#0E0E10] border-b-2 border-[#BFC5C9] rounded-b-lg"
+            >
+              Transaction Type
+            </th>
+            <th
+              class="text-left p-2 font-semibold text-[#0E0E10] border-b-2 border-[#BFC5C9] rounded-b-lg"
+            >
+              Date
+            </th>
+            <th
+              class="text-left p-2 font-semibold text-[#0E0E10] border-b-2 border-[#BFC5C9] rounded-b-lg"
+            >
+              Category
+            </th>
+            <th
+              class="text-left p-2 font-semibold text-[#0E0E10] border-b-2 border-[#BFC5C9] rounded-b-lg"
+            >
+              Amount
+            </th>
+            <th
+              class="text-left p-2 font-semibold text-[#0E0E10] border-b-2 border-[#BFC5C9] rounded-b-lg"
+            >
+              Status
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-red">
+          <tr class="hover:bg-amber-100 transition-colors"></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
