@@ -16,9 +16,10 @@ export class VerifyAccount implements OnInit {
   private fb = inject(FormBuilder);
 
   email: string | null = null;
+  loader = false;
 
   // Initialize form without email first
-  otpForm = this.fb.group({
+  verifyForm = this.fb.group({
     email: ['', Validators.required],
     otp: ['', [Validators.required, Validators.minLength(6)]],
   });
@@ -38,12 +39,12 @@ export class VerifyAccount implements OnInit {
     }
 
     // Set the email in the form after we have it
-    this.otpForm.patchValue({
+    this.verifyForm.patchValue({
       email: this.email,
     });
 
     // Optional: Disable email field so user can't change it
-    this.otpForm.get('email')?.disable();
+    this.verifyForm.get('email')?.disable();
   }
 
   // Helper method to get query params if you're using them
@@ -53,10 +54,12 @@ export class VerifyAccount implements OnInit {
   }
 
   onVerify(): void {
-    if (this.otpForm.invalid) {
-      this.otpForm.markAllAsTouched();
+    if (this.verifyForm.invalid) {
+      this.verifyForm.markAllAsTouched();
       return;
     }
+
+    this.loader = true;
 
     // FIX: Get email from the class property (already validated in ngOnInit)
     // or from the form value with a non-null assertion
@@ -72,7 +75,7 @@ export class VerifyAccount implements OnInit {
     // Now TypeScript knows emailValue is string (not null)
     const payload = {
       email: emailValue,
-      otp: this.otpForm.getRawValue().otp as string,
+      otp: this.verifyForm.getRawValue().otp as string,
     };
 
     console.log('Verifying with payload:', payload);
@@ -91,13 +94,13 @@ export class VerifyAccount implements OnInit {
 
   // Alternative approach using form value with type assertion
   onVerifyAlternative(): void {
-    if (this.otpForm.invalid) {
-      this.otpForm.markAllAsTouched();
+    if (this.verifyForm.invalid) {
+      this.verifyForm.markAllAsTouched();
       return;
     }
 
     // Get the raw form value (includes disabled fields)
-    const formValue = this.otpForm.getRawValue();
+    const formValue = this.verifyForm.getRawValue();
 
     // Type assertion to tell TypeScript these values are strings
     const payload = {
@@ -124,5 +127,13 @@ export class VerifyAccount implements OnInit {
         alert(message);
       },
     });
+  }
+
+  onResend(): void {
+    if (!this.email) {
+      alert('Email is missing. Please try registering again.');
+      this.router.navigate(['/auth/register']);
+      return;
+    }
   }
 }

@@ -1,1 +1,522 @@
-<p>transactions works!</p>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Page Header -->
+  <div
+    class="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+  >
+    <div>
+      <h1 class="text-3xl font-bold text-[#1A202C]">Transactions</h1>
+      <p class="text-[#4A5568] text-sm mt-1">
+        View and manage all your financial activities
+      </p>
+    </div>
+
+    <div>
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <button
+          class="mt-4 md:mt-0 px-6 py-3 bg-linear-to-r from-[#1E4D34] to-[#00B074] text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2 justify-center"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+            ></path>
+          </svg>
+          Download PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter and Export Buttons -->
+    <!-- <div class="flex items-center gap-3 mt-4 sm:mt-0">
+      <button
+        class="px-4 py-2 border border-[#E0E4E8] rounded-lg text-sm font-medium text-[#4A5568] hover:bg-[#F5F7FA] transition-colors flex items-center gap-2"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+          ></path>
+        </svg>
+        Filter
+      </button>
+      <button
+        class="px-4 py-2 bg-linear-to-r from-[#1E4D34] to-[#00B074] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+      >
+        <svg
+          class="w-4 h-4"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+          ></path>
+        </svg>
+        Export
+      </button>
+    </div> -->
+  </div>
+
+  <!-- Stats Cards -->
+  <!-- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[#4A5568]">Total Transactions</p>
+          <p class="text-2xl font-bold text-[#1A202C] mt-1">
+            {{ transactions.length }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-full bg-[#E8F5E9] flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-[#00B074]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[#4A5568]">Total Credit</p>
+          <p class="text-2xl font-bold text-[#00B074] mt-1">
+            ₦{{ getTotalCredit() | number: "1.0-0" }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[#4A5568]">Total Debit</p>
+          <p class="text-2xl font-bold text-[#FF6B6B] mt-1">
+            ₦{{ getTotalDebit() | number: "1.0-0" }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-[#4A5568]">Success Rate</p>
+          <p class="text-2xl font-bold text-[#1A202C] mt-1">
+            {{ getSuccessRate() }}%
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 rounded-full bg-[#E8F5E9] flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-[#00B074]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Transactions Table Card -->
+  <section class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <!-- Table Header with Search and Filters -->
+    <div
+      class="px-6 py-4 border-b border-[#E0E4E8] bg-linear-to-r from-[#F5F7FA] to-white"
+    >
+      <div
+        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div class="flex items-center gap-4">
+          <h2 class="text-lg font-bold text-[#1A202C]">Transaction History</h2>
+          <!-- Status Filter Tabs -->
+          <div class="flex items-center gap-2">
+            <button
+              (click)="filterByStatus('all')"
+              class="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+              [ngClass]="{
+                'bg-[#00B074] text-white': currentFilter === 'all',
+                'text-[#4A5568] hover:bg-[#F5F7FA]': currentFilter !== 'all',
+              }"
+            >
+              All
+            </button>
+            <button
+              (click)="filterByStatus('completed')"
+              class="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+              [ngClass]="{
+                'bg-[#00B074] text-white': currentFilter === 'completed',
+                'text-[#4A5568] hover:bg-[#F5F7FA]':
+                  currentFilter !== 'completed',
+              }"
+            >
+              Completed
+            </button>
+            <button
+              (click)="filterByStatus('pending')"
+              class="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+              [ngClass]="{
+                'bg-[#00B074] text-white': currentFilter === 'pending',
+                'text-[#4A5568] hover:bg-[#F5F7FA]':
+                  currentFilter !== 'pending',
+              }"
+            >
+              Pending
+            </button>
+            <button
+              (click)="filterByStatus('failed')"
+              class="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+              [ngClass]="{
+                'bg-[#00B074] text-white': currentFilter === 'failed',
+                'text-[#4A5568] hover:bg-[#F5F7FA]': currentFilter !== 'failed',
+              }"
+            >
+              Failed
+            </button>
+          </div>
+        </div>
+
+        <!-- Search -->
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Search transactions..."
+            class="pl-10 pr-4 py-2 border border-[#E0E4E8] rounded-lg focus:border-[#00B074] focus:outline-none focus:ring-2 focus:ring-[#00B074]/20 transition-all text-sm w-full sm:w-64"
+          />
+          <svg
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA6B8]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-[#F5F7FA]">
+          <tr>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              S/N
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Transaction
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Reference
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Date & Time
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Category
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Amount
+            </th>
+            <th
+              class="text-left px-6 py-4 text-xs font-semibold text-[#4A5568] uppercase tracking-wider"
+            >
+              Status
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-[#E0E4E8]">
+          @for (tx of filteredTransactions; track tx.reference) {
+            <tr class="hover:bg-[#F5F7FA] transition-colors group">
+              <td class="px-6 py-4 text-sm text-[#4A5568]">
+                {{ (currentPage - 1) * pageSize + 1 + $index }}
+              </td>
+
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="w-10 h-10 rounded-full bg-linear-to-br from-[#1E4D34]/10 to-[#00B074]/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+                  >
+                    @if (tx.type === "credit") {
+                      <svg
+                        class="w-5 h-5 text-[#00B074]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 11l5-5m0 0l5 5m-5-5v12"
+                        ></path>
+                      </svg>
+                    } @else {
+                      <svg
+                        class="w-5 h-5 text-[#FF6B6B]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M17 13l-5 5m0 0l-5-5m5 5V6"
+                        ></path>
+                      </svg>
+                    }
+                  </div>
+                  <div>
+                    <span class="font-medium text-[#1A202C] block">{{
+                      tx.type | titlecase
+                    }}</span>
+                    <span class="text-xs text-[#4A5568]">{{
+                      getTransactionDescription(tx)
+                    }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-6 py-4">
+                <span class="text-sm font-mono text-[#4A5568]"
+                  >{{ tx.reference | slice: 0 : 12 }}...</span
+                >
+              </td>
+
+              <td class="px-6 py-4">
+                <div class="text-sm text-[#4A5568]">
+                  <span class="block">{{ toLocalDate(tx.createdAt) }}</span>
+                  <!-- <span class="text-xs text-[#9AA6B8]">{{
+                    tx.createdAt | date: "shortTime"
+                  }}</span> -->
+                </div>
+              </td>
+
+              <td class="px-6 py-4">
+                <span
+                  class="px-3 py-1 bg-[#F5F7FA] rounded-full text-xs font-medium text-[#4A5568]"
+                >
+                  {{ tx.category || "General" }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4">
+                <span
+                  class="font-semibold text-lg"
+                  [class.text-[#00B074]]="tx.type === 'credit'"
+                  [class.text-[#FF6B6B]]="tx.type === 'debit'"
+                >
+                  {{ tx.type === "credit" ? "+" : "-" }}₦{{
+                    tx.amount | number: "1.0-0"
+                  }}
+                </span>
+              </td>
+
+              <td class="px-6 py-4">
+                <span
+                  class="px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 w-fit"
+                  [ngClass]="{
+                    'bg-[#E8F5E9] text-[#00B074]': tx.status === 'completed',
+                    'bg-yellow-50 text-yellow-600': tx.status === 'pending',
+                    'bg-[#FFF1F1] text-[#FF6B6B]': tx.status === 'failed',
+                  }"
+                >
+                  @if (tx.status === "completed") {
+                    <svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  } @else if (tx.status === "pending") {
+                    <svg
+                      class="w-3 h-3 animate-spin"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      ></path>
+                    </svg>
+                  } @else {
+                    <svg
+                      class="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  }
+                  {{ tx.status | titlecase }}
+                </span>
+              </td>
+            </tr>
+          }
+
+          @if (transactions.length === 0) {
+            <tr>
+              <td colspan="8" class="text-center py-16">
+                <div class="flex flex-col items-center">
+                  <div
+                    class="w-24 h-24 bg-[#F5F7FA] rounded-full flex items-center justify-center mb-4"
+                  >
+                    <svg
+                      class="w-12 h-12 text-[#9AA6B8]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="1.5"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      ></path>
+                    </svg>
+                  </div>
+                  <p class="text-[#1A202C] font-medium text-lg">
+                    No transactions yet
+                  </p>
+                  <p class="text-sm text-[#4A5568] mt-1 max-w-md text-center">
+                    When you make transfers or receive money, your transactions
+                    will appear here
+                  </p>
+                  <button
+                    routerLink="/transfer"
+                    class="mt-4 px-6 py-2 bg-linear-to-r from-[#1E4D34] to-[#00B074] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all duration-300"
+                  >
+                    Perform a Transaction
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+
+        <!-- Pagination -->
+        @if (transactions.length > 0) {
+          <tfoot class="bg-[#F5F7FA] border-t border-[#E0E4E8]">
+            <tr>
+              <td colspan="8" class="px-6 py-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm text-[#4A5568]">
+                    Showing {{ (currentPage - 1) * pageSize + 1 }} to
+                    {{
+                      currentPage * pageSize > filteredTransactions.length
+                        ? filteredTransactions.length
+                        : currentPage * pageSize
+                    }}
+                    of {{ filteredTransactions.length }} entries
+                  </p>
+                  <div class="flex items-center gap-2">
+                    <button
+                      (click)="changePage(currentPage - 1)"
+                      [disabled]="currentPage === 1"
+                      class="px-3 py-1 border border-[#E0E4E8] rounded-lg text-sm text-[#4A5568] hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+
+                    @for (page of getPageNumbers(); track page) {
+                      <button
+                        (click)="changePage(page)"
+                        class="px-3 py-1 rounded-lg text-sm transition-colors"
+                        [ngClass]="{
+                          'bg-[#00B074] text-white': currentPage === page,
+                          'border border-[#E0E4E8] text-[#4A5568] hover:bg-white':
+                            currentPage !== page,
+                        }"
+                      >
+                        {{ page }}
+                      </button>
+                    }
+
+                    <button
+                      (click)="changePage(currentPage + 1)"
+                      [disabled]="currentPage === totalPages"
+                      class="px-3 py-1 border border-[#E0E4E8] rounded-lg text-sm text-[#4A5568] hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tfoot>
+        }
+      </table>
+    </div>
+  </section>
+</main>

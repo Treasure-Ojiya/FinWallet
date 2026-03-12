@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { UserService } from '../../core/service/user/user-service';
+import { TransferService } from '../../core/service/transfer/transfer-service';
 import { Router } from '@angular/router';
 import { PinChange } from '../modals/pin-change/pin-change';
 import { PinSetup } from '../modals/pin-setup/pin-setup';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-account-details',
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common';
 })
 export class AccountDetails implements OnInit {
   private userService = inject(UserService);
+  private transferService = inject(TransferService);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
@@ -22,6 +24,8 @@ export class AccountDetails implements OnInit {
   emailVerified = false;
   phoneNumber = '';
   accountLevel = '';
+  createdAt = '';
+  isVerified = false;
 
   bankName = '';
   accountName = '';
@@ -32,10 +36,22 @@ export class AccountDetails implements OnInit {
   showPinChangeModal = false;
   hasPin = false;
 
+  totalTransactions: number = 0;
+
   ngOnInit(): void {
     this.userDetails();
     this.getBankDetails();
     this.checkPinStatus();
+
+    this.transferService.transactions$.subscribe((transactions) => {
+      if (transactions && transactions.length > 0) {
+        this.totalTransactions = transactions.length;
+      } else {
+        this.totalTransactions = 0;
+      }
+    });
+
+    this.transferService.fetchTransactions().subscribe();
   }
 
   userDetails() {
@@ -47,9 +63,45 @@ export class AccountDetails implements OnInit {
         this.emailVerified = res.data.emailVerified;
         this.phoneNumber = res.data.phoneNumber;
         this.accountLevel = res.data.accountLevel;
+        this.createdAt = res.data.createdAt;
+        this.isVerified = res.data.emailVerified;
       },
     });
   }
+
+  // In your component
+  get displayYear(): string {
+    if (!this.createdAt) return '';
+
+    try {
+      const date = new Date(this.createdAt);
+      // Check if it's a valid date
+      if (!isNaN(date.getTime())) {
+        return date.getFullYear().toString();
+      }
+      return '';
+    } catch {
+      return '';
+    }
+  }
+
+  createInitials(): string {
+    const firstInitial = this.firstName
+      ? this.firstName.charAt(0).toUpperCase()
+      : '';
+    const lastInitial = this.lastName
+      ? this.lastName.charAt(0).toUpperCase()
+      : '';
+    return firstInitial + lastInitial;
+  }
+
+  // In your component
+  // getFormattedDate() {
+  //   if (this.createdAt?.toDate) {
+  //     return this.createdAt.toDate();
+  //   }
+  //   return this.createdAt;
+  // }
 
   getBankDetails() {
     this.userService.myBankDetails().subscribe({

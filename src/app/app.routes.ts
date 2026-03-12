@@ -10,20 +10,17 @@ export const routes: Routes = [
   {
     path: 'auth',
     children: [
-      // {
-      //   path: '',
-      //   loadComponent: () =>
-      //     import('./pages/auth/auth-page/auth-page').then((m) => m.AuthPage),
-      // },
       {
         path: '',
         loadComponent: () =>
           import('./pages/auth/login/login').then((m) => m.Login),
+        data: { hideLayout: true },
       },
       {
         path: 'register',
         loadComponent: () =>
           import('./pages/auth/register/register').then((m) => m.Register),
+        data: { hideLayout: true },
       },
       {
         path: 'verify-account',
@@ -31,11 +28,13 @@ export const routes: Routes = [
           import('./pages/auth/verify-account/verify-account').then(
             (m) => m.VerifyAccount,
           ),
+        data: { hideLayout: true },
       },
       {
         path: 'resend-otp',
         loadComponent: () =>
           import('./pages/auth/resend-otp/resend-otp').then((m) => m.ResendOTP),
+        data: { hideLayout: true },
       },
     ],
   },
@@ -44,6 +43,12 @@ export const routes: Routes = [
     path: 'overview',
     loadComponent: () =>
       import('./pages/overview/overview/overview').then((m) => m.Overview),
+  },
+
+  {
+    path: 'transactions',
+    loadComponent: () =>
+      import('./pages/transactions/transactions').then((m) => m.Transactions),
   },
 
   {

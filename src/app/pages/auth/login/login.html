@@ -1,89 +1,119 @@
+<!-- <main
+  class="min-h-screen grid place-items-center bg-linear-to-br from-[#E8F5E9] to-[#F5F7FA]"
+>-->
 <main class="min-h-screen grid place-items-center">
   <div
-    class="border border-[#BFC5C9] rounded-lg p-4 w-full max-w-md shadow-md shadow-[#1E4D3A]/20"
+    class="border border-[#E0E4E8] rounded-xl p-6 w-full max-w-md shadow-xl bg-white"
   >
     <form
       [formGroup]="loginForm"
       (ngSubmit)="onLogin()"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-5"
     >
       <div class="text-center">
-        <h3 class="text-[#0E0E10] font-bold text-lg">Sign In</h3>
+        <h3 class="text-[#1A202C] font-bold text-2xl">Welcome Back</h3>
+        <p class="text-[#4A5568] text-sm mt-1">Sign in to your account</p>
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label class="text-[#3A3A3C]">Email</label>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[#4A5568] font-medium text-sm">Email</label>
         <input
           type="email"
           formControlName="email"
-          class="p-2 border border-[#9A9A9A] focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40 rounded-lg w-full"
+          class="p-3 border border-[#E0E4E8] focus:border-[#00B074] focus:outline-none focus:ring-2 focus:ring-[#00B074]/20 rounded-lg w-full transition-all duration-200 text-[#1A202C] placeholder-[#9AA6B8]"
+          placeholder="you@example.com"
         />
       </div>
 
-      <div class="flex flex-col gap-2">
-        <label class="text-[#3A3A3C]">Password</label>
-        <input
-          type="password"
-          formControlName="password"
-          class="p-2 border border-[#9A9A9A] focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40 rounded-lg w-full"
-        />
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[#4A5568] font-medium text-sm">Password</label>
+
+        <div class="relative">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            class="p-3 pr-10 border border-[#E0E4E8] focus:border-[#00B074] focus:outline-none focus:ring-2 focus:ring-[#00B074]/20 rounded-lg w-full transition-all duration-200 text-[#1A202C]"
+            placeholder="••••••••"
+          />
+
+          <button
+            type="button"
+            class="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none group"
+            (click)="togglePassword()"
+          >
+            <img
+              [src]="
+                showPassword ? '/icons/eye-view.svg' : '/icons/eye-hide.svg'
+              "
+              alt="toggle password visibility"
+              class="w-5 h-5 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
+            />
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <a
+          routerLink="/auth/forgot-password"
+          class="text-[#00B074] hover:text-[#1E4D34] text-sm font-medium transition-colors duration-200"
+        >
+          Forgot password?
+        </a>
       </div>
 
       <div>
         <button
           type="submit"
-          class="w-full text-[#EFEFEF] bg-[#1E4D3A] font-semibold rounded-lg p-2 cursor-pointer hover:text-[#1E4D3A] hover:bg-[#BFC5C9] transition-colors duration-300"
+          class="w-full text-white bg-linear-to-r from-[#1E4D34] to-[#00B074] font-semibold rounded-lg p-3 hover:from-[#00B074] hover:to-[#1E4D34] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
         >
           Sign In
         </button>
       </div>
 
+      <div class="relative">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-[#E0E4E8]"></div>
+        </div>
+        <div class="relative flex justify-center text-sm">
+          <span class="px-4 bg-white text-[#4A5568]">or</span>
+        </div>
+      </div>
+
+      <!-- <button
+        type="button"
+        class="w-full border border-[#E0E4E8] text-[#4A5568] bg-white font-medium rounded-lg p-3 hover:bg-[#F5F7FA] hover:border-[#00B074] transition-all duration-200 flex items-center justify-center gap-2"
+      >
+        <svg class="w-5 h-5" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+          />
+          <path
+            fill="currentColor"
+            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+          />
+          <path
+            fill="currentColor"
+            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+          />
+          <path
+            fill="currentColor"
+            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+          />
+        </svg>
+        Continue with Google
+      </button> -->
+
       <div class="text-center">
-        <p class="auth-link text-[#3A3A3C] text-sm font-medium">
-          Don’t have an account?
+        <p class="text-[#4A5568] text-sm">
+          Don't have an account?
           <a
             routerLink="/auth/register"
-            class="text-[#3A3A3C] hover:text-[#1E4D3A] font-semibold text-sm"
-            >Register</a
+            class="text-[#00B074] hover:text-[#1E4D34] font-semibold transition-colors duration-200"
+            >Create account</a
           >
         </p>
       </div>
     </form>
   </div>
 </main>
-
-<!-- <main class="min-h-screen grid place-items-center bg-off-white">
-  <div class="border border-platinum rounded-lg p-4 w-full max-w-md card">
-    <form
-      [formGroup]="loginForm"
-      (ngSubmit)="onLogin()"
-      class="flex flex-col gap-4"
-    >
-      <div class="text-center">
-        <h3 class="text-almost-black font-bold text-lg">Sign In</h3>
-      </div>
-
-      <div>
-        <label class="form-label">Email</label>
-        <input type="email" formControlName="email" class="form-input" />
-      </div>
-
-      <div>
-        <label class="form-label">Password</label>
-        <input type="password" formControlName="password" class="form-input" />
-      </div>
-
-      <button type="submit" class="btn-primary w-full">Sign In</button>
-
-      <p class="text-center text-warm-gray text-sm">
-        Don't have an account?
-        <a
-          routerLink="/auth/register"
-          class="text-deep-forest hover:text-warm-gray"
-        >
-          Register
-        </a>
-      </p>
-    </form>
-  </div>
-</main> -->

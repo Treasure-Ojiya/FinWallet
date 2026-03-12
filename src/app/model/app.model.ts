@@ -48,7 +48,7 @@ export interface UserResponse {
   status: string;
   msg: string;
   data: {
-    _id: string;
+    id: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -125,17 +125,44 @@ export interface WalletDetailsResponse {
 }
 
 // Add these interfaces to your existing app.model.ts
+export interface Beneficiary {
+  userId: string;
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+  bankCode: string;
+  createdAt: string;
+  updatedAt: string;
+  id: string;
+}
+
+export interface BeneficiaryResponse {
+  status: string;
+  msg: string;
+  data: [
+    {
+      userId: string;
+      accountName: string;
+      accountNumber: string;
+      bankName: string;
+      bankCode: string;
+      createdAt: string;
+      updatedAt: string;
+      id: string;
+    },
+  ];
+}
 
 export interface TransferRequest {
   amount: number;
-  bankName: string; // Add this - required by backend
+  bankName: string;
   accountNumber: string;
-  accountName: string; // Add this - required by backend
+  accountName: string;
   bankCode: string;
   narration: string;
-  pin: string; // Make this required (not optional)
-  categoryId?: string; // Optional - you can set a default
-  saveAsBeneficiary?: boolean; // This might be client-side only
+  pin: string;
+  categoryId?: string;
+  saveBeneficiary: boolean;
 }
 
 export interface TransferResponse {
@@ -161,6 +188,16 @@ export interface TransferData {
   id: string;
 }
 
+export interface PaginationOption {
+  page?: number;
+  perPage?: number;
+
+  // option for later filtration method
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
 export interface SetPinRequest {
   pin: string;
 }
@@ -173,6 +210,49 @@ export interface ChangePinRequest {
 export interface PinResponse {
   status: string;
   msg: string;
+}
+
+export interface TransactionData {
+  userId: string;
+  amount: number;
+  type: 'debit' | 'credit';
+  categoryId: string;
+  status: 'completed' | 'pending' | 'failed';
+  narration: string;
+  reference: string;
+  bankName: string;
+  accountName: string;
+  accountNumber: string;
+  bankCode?: string;
+
+  createdAt?: string;
+  updatedAt?: string;
+  id?: string;
+  category?: string;
+
+  bill?: {
+    userId: string;
+    transactionId: string;
+    billerName: string;
+    billerType: string;
+    amount: number;
+    reference: string;
+    serviceID: string;
+    status: string;
+    createdAt: string | null;
+    updatedAt: string;
+    customerAddress: string;
+    customerName: string;
+    token: string;
+    unit: string;
+    id: string;
+  };
+}
+
+export interface TransactionResponse {
+  status: string;
+  msg: string;
+  data: TransactionData[];
 }
 
 // Optional - if you need PIN verification endpoint later

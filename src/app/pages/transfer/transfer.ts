@@ -12,7 +12,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { UserService } from '../../core/service/user/user-service';
 import { TransferService } from '../../core/service/transfer/transfer-service';
+import { WalletService } from '../../core/service/wallet/wallet-service';
 import {
+  Beneficiary,
+  BeneficiaryResponse,
   Bank,
   GetBankResponse,
   ResolveAccountResponse,
@@ -38,10 +41,12 @@ import { PinVerification } from '../modals/pin-verification/pin-verification';
 export class Transfer implements OnInit {
   private userService = inject(UserService);
   private transferService = inject(TransferService);
+  private walletService = inject(WalletService);
   private fb = inject(FormBuilder);
   private snackBar = inject(MatSnackBar);
   private router = inject(Router);
 
+  beneficiaries: Beneficiary[] = [];
   banks: Bank[] = [];
   filteredBanks: Bank[] = [];
 
@@ -58,12 +63,7 @@ export class Transfer implements OnInit {
   searchForm!: FormGroup;
   accountForm!: FormGroup;
 
-  beneficiaries: {
-    accountNumber: string;
-    accountName: string;
-    bankName: string;
-    bankCode: string;
-  }[] = [];
+  userBalance = 0;
 
   showPinModal = false;
   pendingTransferData: any = null;
@@ -73,21 +73,43 @@ export class Transfer implements OnInit {
     this.fetchBanks();
     this.loadBeneficiaries();
     this.watchAccountNumber();
-    this.loadUserDetails(); // Add this to load user details
+    this.loadUserDetails();
+
+    this.walletService.balance$.subscribe((balance) => {
+      this.userBalance = balance;
+    });
+
+    this.walletService.refreshBalance();
   }
 
   /* ===========================
      👤 USER DETAILS
      =========================== */
 
+  // In transfer.ts
   private loadUserDetails() {
+    console.log('🔄 Loading user details...');
+
     this.userService.getUserDetail().subscribe({
       next: (res: UserResponse) => {
-        this.userId = res.data._id;
-        console.log('User ID loaded:', this.userId);
+        console.log('✅ User details response:', res); // Log full response
+        console.log('User data object:', res.data); // Log just the data
+
+        this.userId = res.data.id;
+        console.log('User ID set to:', this.userId); // This should show the ID
+
+        // Also log to verify the structure matches
+        console.log('Response structure check:', {
+          hasData: !!res.data,
+          hasId: !!res.data?.id,
+          idValue: res.data?.id,
+        });
       },
       error: (error) => {
-        console.error('Failed to load user details:', error);
+        console.error('❌ Failed to load user details:', error);
+        console.error('Error status:', error.status);
+        console.error('Error details:', error.error);
+
         this.snackBar.open('Failed to load user details', 'Close', {
           duration: 3000,
           panelClass: ['error-snackbar'],
@@ -95,6 +117,19 @@ export class Transfer implements OnInit {
       },
     });
   }
+
+  // getUserBalance() {
+  //   this.walletService.getCurrentBalance().subscribe({
+  //     next: (res: any) => {
+  //       this.userBalance = res.data?.balance || res.balance || res;
+  //     },
+  //     error: (error) => {
+  //       console.error('❌ Failed to load user balance:', error);
+  //       console.error('Error status:', error.status);
+  //       console.error('Error details:', error.error);
+  //     },
+  //   });
+  // }
 
   /* ===========================
      🧱 FORMS
@@ -143,9 +178,15 @@ export class Transfer implements OnInit {
     );
   }
 
+  closeBankDropdown() {
+    this.bankOpen = false;
+  }
+
   selectBank(bank: Bank) {
     this.selectedBank = bank;
-    this.selectedBankCode = bank.code;
+
+    this.selectedBankCode = bank.code.toString(); // Convert to string if needed
+
     this.bankQuery = bank.name;
     this.bankOpen = false;
 
@@ -154,17 +195,10 @@ export class Transfer implements OnInit {
     }
   }
 
-  closeBankDropdown() {
-    this.bankOpen = false;
-  }
-
-  /* ===========================
-     🔁 ACCOUNT RESOLUTION
-     =========================== */
-
   resolveAccount() {
     const { accountNumber } = this.accountForm.value;
 
+    // This will now check for bank.id instead of bank.code
     if (!accountNumber || !this.selectedBankCode) {
       console.log('Missing required fields:', {
         accountNumber,
@@ -175,12 +209,12 @@ export class Transfer implements OnInit {
 
     console.log('Resolving account with:', {
       accountNumber,
-      bankCode: this.selectedBankCode,
+      bankCode: this.selectedBankCode, // Now this will be the bank ID
       bankName: this.selectedBank?.name,
     });
 
     this.userService
-      .resolveAccountDetails(accountNumber, this.selectedBankCode)
+      .resolveAccount(accountNumber, this.selectedBankCode)
       .subscribe({
         next: (res: ResolveAccountResponse) => {
           console.log('Resolve success:', res);
@@ -228,7 +262,6 @@ export class Transfer implements OnInit {
       return;
     }
 
-    // Check if user has PIN set
     if (!this.userService.hasPin()) {
       this.snackBar.open(
         'Please set up your transaction PIN first in Account Details',
@@ -241,7 +274,6 @@ export class Transfer implements OnInit {
       return;
     }
 
-    // Check if user ID is loaded
     if (!this.userId) {
       this.snackBar.open(
         'User details not loaded. Please try again.',
@@ -254,7 +286,6 @@ export class Transfer implements OnInit {
       return;
     }
 
-    // Store transfer data and show PIN modal
     this.pendingTransferData = {
       amount: Number(this.accountForm.value.amount),
       bankName: this.selectedBank.name,
@@ -262,7 +293,7 @@ export class Transfer implements OnInit {
       accountName: this.resolvedAccountName,
       bankCode: this.selectedBankCode,
       narration: this.accountForm.value.narration,
-      saveAsBeneficiary: this.accountForm.value.saveAsBeneficiary,
+      saveBeneficiary: this.accountForm.value.saveAsBeneficiary,
     };
 
     this.showPinModal = true;
@@ -277,7 +308,6 @@ export class Transfer implements OnInit {
 
     if (!this.pendingTransferData) return;
 
-    // Use the user's _id as the categoryId
     const transferRequest: TransferRequest = {
       amount: this.pendingTransferData.amount,
       bankName: this.pendingTransferData.bankName,
@@ -286,11 +316,11 @@ export class Transfer implements OnInit {
       bankCode: this.pendingTransferData.bankCode,
       narration: this.pendingTransferData.narration,
       pin: pin,
-      categoryId: this.userId, // Use the actual user ID from user details
-      // saveAsBeneficiary is NOT sent to backend - handled client-side
+      categoryId: this.userId,
+      saveBeneficiary: this.pendingTransferData.saveBeneficiary, // ✅ Changed from saveAsBeneficiary
     };
 
-    console.log('Transfer request with categoryId:', transferRequest);
+    console.log('Transfer request:', transferRequest);
     this.executeTransfer(transferRequest);
   }
 
@@ -303,8 +333,7 @@ export class Transfer implements OnInit {
 
     this.isLoading = true;
 
-    // Log the request to verify structure
-    console.log('Transfer Request:', transferRequest);
+    console.log('Sending transfer request:', transferRequest.saveBeneficiary);
 
     this.transferService.createTransfer(transferRequest).subscribe({
       next: (response) => {
@@ -313,41 +342,25 @@ export class Transfer implements OnInit {
         this.snackBar.open(
           `Transfer successful! Reference: ${response.data.reference}`,
           'Close',
-          {
-            duration: 5000,
-            panelClass: ['success-snackbar'],
-          },
+          { duration: 5000, panelClass: ['success-snackbar'] },
         );
 
-        // Save as beneficiary if toggle is on (client-side only)
-        if (this.pendingTransferData?.saveAsBeneficiary) {
-          this.saveBeneficiary({
-            accountNumber: this.pendingTransferData.accountNumber,
-            accountName: this.pendingTransferData.accountName,
-            bankName: this.pendingTransferData.bankName,
-            bankCode: this.pendingTransferData.bankCode,
-          });
+        this.walletService.refreshBalance();
+
+        // ✅ IMPORTANT: If user wanted to save as beneficiary, reload from API
+        if (transferRequest.saveBeneficiary) {
+          console.log(
+            '🔄 Beneficiary was saved on backend, reloading from API...',
+          );
+          setTimeout(() => {
+            this.loadBeneficiaries(); // This will fetch from your API
+          }, 500);
         }
 
-        // Reset form
         this.resetForm();
       },
       error: (error) => {
-        this.isLoading = false;
-
-        let errorMessage = 'Transfer failed. Please try again.';
-        if (error.error?.msg) {
-          errorMessage = error.error.msg;
-        } else if (error.error?.message) {
-          errorMessage = error.error.message;
-        }
-
-        this.snackBar.open(errorMessage, 'Close', {
-          duration: 5000,
-          panelClass: ['error-snackbar'],
-        });
-
-        this.pendingTransferData = null;
+        // ... error handling
       },
     });
   }
@@ -373,38 +386,64 @@ export class Transfer implements OnInit {
      👥 BENEFICIARY MANAGEMENT
      =========================== */
 
-  private loadBeneficiaries() {
-    const saved = localStorage.getItem('beneficiaries');
-    if (saved) {
-      try {
-        this.beneficiaries = JSON.parse(saved);
-      } catch (e) {
+  getInitials(name: string): string {
+    if (!name) return 'B';
+
+    // Split the name into words
+    const words = name.trim().split(' ');
+
+    if (words.length === 1) {
+      // If only one word, take first two letters or just first letter
+      return words[0].substring(0, 2).toUpperCase();
+    }
+
+    // Take first letter of first word and first letter of last word
+    const firstInitial = words[0].charAt(0);
+    const lastInitial = words[words.length - 1].charAt(0);
+
+    return (firstInitial + lastInitial).toUpperCase();
+  }
+
+  loadBeneficiaries() {
+    console.log('🔄 Loading beneficiaries from API...');
+
+    this.userService.getBeneficiaries().subscribe({
+      next: (response: BeneficiaryResponse) => {
+        console.log('✅ Beneficiaries loaded:', response);
+
+        // ✅ CORRECT: response.data is an array of beneficiary objects
+        // Each object has: accountName, accountNumber, bankName, bankCode, etc.
+        this.beneficiaries = response.data; // This matches your Beneficiary[] type
+        console.log('Updated beneficiaries array:', this.beneficiaries);
+      },
+      error: (error) => {
+        console.error('❌ Failed to load beneficiaries:', error);
         this.beneficiaries = [];
-      }
-    }
+      },
+    });
   }
 
-  private saveBeneficiary(beneficiary: {
-    accountNumber: string;
-    accountName: string;
-    bankName: string;
-    bankCode: string;
-  }) {
-    const exists = this.beneficiaries.some(
-      (b) =>
-        b.accountNumber === beneficiary.accountNumber &&
-        b.bankCode === beneficiary.bankCode,
-    );
+  // private saveBeneficiary(beneficiary: {
+  //   accountNumber: string;
+  //   accountName: string;
+  //   bankName: string;
+  //   bankCode: string;
+  // }) {
+  //   const exists = this.beneficiaries.some(
+  //     (b) =>
+  //       b.accountNumber === beneficiary.accountNumber &&
+  //       b.bankCode === beneficiary.bankCode,
+  //   );
 
-    if (!exists) {
-      this.beneficiaries.push(beneficiary);
-      localStorage.setItem('beneficiaries', JSON.stringify(this.beneficiaries));
+  //   if (!exists) {
+  //     this.beneficiaries.push(beneficiary);
+  //     localStorage.setItem('beneficiaries', JSON.stringify(this.beneficiaries));
 
-      this.snackBar.open('Beneficiary saved successfully', 'Close', {
-        duration: 2000,
-      });
-    }
-  }
+  //     this.snackBar.open('Beneficiary saved successfully', 'Close', {
+  //       duration: 2000,
+  //     });
+  //   }
+  // }
 
   selectBeneficiary(beneficiary: {
     accountNumber: string;

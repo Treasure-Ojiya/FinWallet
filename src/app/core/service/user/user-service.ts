@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Remove HttpParams if not needed
-import { Observable, tap } from 'rxjs';
+import {
+  HttpClient,
+  HttpParams,
+  HttpErrorResponse,
+} from '@angular/common/http';
+import { Observable, tap, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { environment } from '../../../../environment/environment';
 import {
   UserResponse,
@@ -8,6 +13,7 @@ import {
   ResolveAccountResponse,
   BankDetailsResponse,
   WalletDetailsResponse,
+  BeneficiaryResponse,
   PinResponse,
   SetPinRequest,
   ChangePinRequest,
@@ -21,28 +27,66 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  // In user-service.ts - Add more detailed logging
   getUserDetail(): Observable<UserResponse> {
-    return this.http.get<UserResponse>(`${this.userUrl}/user/me`);
+    console.log(
+      '🔍 Making getUserDetail API call to:',
+      `${this.userUrl}/user/me`,
+    );
+
+    return this.http.get<UserResponse>(`${this.userUrl}/user/me`).pipe(
+      tap({
+        next: (response) => {
+          console.log('✅ getUserDetail raw response:', response);
+          console.log('✅ getUserDetail data:', response.data);
+          console.log('✅ User ID from API:', response.data?.id);
+        },
+        error: (error) => {
+          console.error('❌ getUserDetail failed:', error);
+          console.error('Status:', error.status);
+          console.error('Error body:', error.error);
+        },
+      }),
+    );
   }
 
   getBanks(): Observable<GetBankResponse> {
     return this.http.get<GetBankResponse>(`${this.userUrl}/user/banks`);
   }
 
-  resolveAccountDetails(
+  resolveAccount(
     accountNumber: string,
     bankCode: string,
   ): Observable<ResolveAccountResponse> {
-    // Use camelCase as the error message confirms the backend expects these exact names
-    return this.http.get<ResolveAccountResponse>(
-      `${this.userUrl}/user/resolve-account`,
-      {
-        params: {
-          accountNumber: accountNumber, // camelCase as expected by backend
-          bankCode: bankCode, // camelCase as expected by backend
-        },
-      },
-    );
+    // Basic client-side validation
+    if (
+      !accountNumber ||
+      accountNumber.length < 5 ||
+      !/^\d+$/.test(accountNumber)
+    ) {
+      // Or throw a more specific error/handle in UI
+      console.error('Invalid account number provided.');
+      return throwError(() => new Error('Invalid account number.'));
+    }
+    if (!bankCode || bankCode.length < 3 || !/^\d+$/.test(bankCode)) {
+      // Or throw a more specific error/handle in UI
+      console.error('Invalid bank code provided.');
+      return throwError(() => new Error('Invalid bank code.'));
+    }
+
+    const url = `${this.userUrl}/user/resolve-account?accountNumber=${accountNumber}&bankCode=${bankCode}`;
+    return this.http
+      .get<ResolveAccountResponse>(url)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    console.error('🚨 Error in UserService:', {
+      status: error.status,
+      message: error.message,
+      error: error.error,
+    });
+    return throwError(() => error);
   }
 
   myBankDetails(): Observable<BankDetailsResponse> {
@@ -55,6 +99,13 @@ export class UserService {
     return this.http.get<WalletDetailsResponse>(
       `${this.userUrl}/user/my-wallet-details`,
     );
+  }
+
+  getBeneficiaries(): Observable<BeneficiaryResponse> {
+    // Log the full URL
+    const url = `${this.userUrl}/user/beneficiaries`; // Is this correct?
+    console.log('Calling beneficiaries URL:', url);
+    return this.http.get<BeneficiaryResponse>(url);
   }
 
   /**

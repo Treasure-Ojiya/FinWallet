@@ -16,6 +16,7 @@ export class Login {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
+  showPassword = false;
   isVerified = false;
   loader = false;
 
@@ -23,6 +24,10 @@ export class Login {
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onLogin(): void {
     localStorage.removeItem('token');
@@ -55,9 +60,8 @@ export class Login {
           this.router.navigate(['/auth/verify-account']);
         }
       },
-      // In login.ts, modify the error handling to see more details
       error: (error) => {
-        console.error('Full error object:', error); // Add this
+        console.error('Full error object:', error);
 
         if (error.error && error.error.msg) {
           alert(`Login failed: ${error.error.msg}`);
@@ -67,7 +71,6 @@ export class Login {
             error.error.msg.includes('verify') ||
             error.error.msg.includes('verified')
           ) {
-            // Navigate to verify page with email
             this.router.navigate(['/auth/verify-account'], {
               state: { email: this.loginForm.value.email },
             });

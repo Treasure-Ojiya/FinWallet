@@ -1,64 +1,103 @@
-<main class="min-h-screen grid place-items-center">
+<main class="min-h-screen grid place-items-center bg-[#F5F7FA]">
   <div
-    class="border border-[#BFC5C9] rounded-lg p-4 w-full max-w-md shadow-md shadow-[#1E4D3A]/20"
+    class="border border-[#E0E4E8] rounded-xl p-6 w-full max-w-md shadow-xl bg-white"
   >
     <form
-      [formGroup]="otpForm"
+      [formGroup]="verifyForm"
       (ngSubmit)="onVerify()"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-5"
     >
       <!-- Title -->
       <div class="text-center">
-        <h3 class="text-[#0E0E10] font-bold text-lg">Verify Your Account</h3>
-      </div>
-
-      <!-- Hint -->
-      <p class="text-center text-[#3A3A3C] text-sm">
-        Enter the 6-digit OTP sent to your email
-      </p>
-
-      <div>
-        <label class="text-[#3A3A3C]">Email</label>
-        <input
-          type="email"
-          formControlName="email"
-          class="p-2 border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
-        />
+        <h3 class="text-[#1A202C] font-bold text-2xl">Verify Account</h3>
+        <p class="text-[#4A5568] text-sm mt-1">
+          Enter the code sent to your email
+        </p>
       </div>
 
       <!-- OTP Input -->
-      <div class="flex flex-col gap-2">
-        <label class="text-[#3A3A3C]">OTP</label>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[#4A5568] font-medium text-sm"
+          >Verification Code</label
+        >
         <input
           type="text"
-          maxlength="6"
-          inputmode="numeric"
           formControlName="otp"
-          class="p-2 text-center tracking-widest text-lg border border-[#9A9A9A] rounded-lg w-full focus:border-[#1E4D3A] focus:outline-none focus:ring-2 focus:ring-[#1E4D3A]/40"
+          placeholder="123456"
+          maxlength="6"
+          class="p-3 border border-[#E0E4E8] rounded-lg w-full focus:border-[#00B074] focus:outline-none focus:ring-2 focus:ring-[#00B074]/20 transition-all duration-200 text-[#1A202C] placeholder-[#9AA6B8] text-center text-2xl tracking-widest"
         />
+        @if (verifyForm.get("otp")?.invalid && verifyForm.get("otp")?.touched) {
+          <div class="text-[#FF6B6B] text-sm mt-1">
+            @if (verifyForm.get("otp")?.errors?.["required"]) {
+              <span>Verification code is required</span>
+            }
+            @if (verifyForm.get("otp")?.errors?.["minlength"]) {
+              <span>Code must be 6 digits</span>
+            }
+          </div>
+        }
       </div>
 
-      <!-- Submit -->
+      <!-- Submit Button with Loading State -->
       <div>
         <button
           type="submit"
-          class="w-full text-[#EFEFEF] bg-[#1E4D3A] font-semibold rounded-lg p-2 cursor-pointer hover:text-[#1E4D3A] hover:bg-[#BFC5C9] transition-colors duration-300"
+          [disabled]="verifyForm.invalid || loader"
+          class="w-full text-white bg-linear-to-r from-[#1E4D34] to-[#00B074] font-semibold rounded-lg p-3 hover:from-[#00B074] hover:to-[#1E4D34] transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none"
         >
-          Verify
+          @if (loader) {
+            <span class="flex items-center justify-center gap-2">
+              <svg
+                class="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                ></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Verifying...
+            </span>
+          } @else {
+            <span>Verify Account</span>
+          }
         </button>
       </div>
 
-      <!-- Resend -->
+      <!-- Resend Code -->
       <div class="text-center">
-        <p class="auth-link text-[#3A3A3C] text-sm font-medium">
-          Didn’t receive OTP?
-          <a
-            routerLink="/auth/resend-otp"
-            class="text-[#3A3A3C] hover:text-[#1E4D3A] font-semibold text-sm cursor-pointer"
+        <p class="text-[#4A5568] text-sm">
+          Didn't receive the code?
+          <button
+            type="button"
+            (click)="onResend()"
+            class="text-[#00B074] hover:text-[#1E4D34] font-semibold transition-colors duration-200"
           >
-            Resend OTP
-          </a>
+            Resend
+          </button>
         </p>
+      </div>
+
+      <!-- Back to Login -->
+      <div class="text-center pt-2 border-t border-[#E0E4E8]">
+        <a
+          routerLink="/auth/login"
+          class="text-[#4A5568] hover:text-[#1E4D34] text-sm font-medium transition-colors duration-200"
+        >
+          ← Back to Login
+        </a>
       </div>
     </form>
   </div>

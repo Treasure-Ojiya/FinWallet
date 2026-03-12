@@ -15,6 +15,8 @@ export class ResendOTP {
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
+  loader = false;
+
   otpForm = this.fb.group({
     email: ['', Validators.required],
   });
@@ -24,6 +26,8 @@ export class ResendOTP {
       this.otpForm.markAllAsTouched();
       return;
     }
+
+    this.loader = true;
 
     const email = this.otpForm.value.email as string;
     this.authentication.resendOtp(email).subscribe({

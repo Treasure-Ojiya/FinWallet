@@ -1,20 +1,367 @@
-<div>
-  <div
-    class="bg-[#EFEFEF] border border-[#BFC5C9] shadow-md shadow-[#1E4D3A]/20 pt-5 pb-2 px-4"
-  >
-    <h1 class="text-2xl font-bold text-[#0E0E10]">Account Details</h1>
+<div class="min-h-screen bg-[#F5F7FA]">
+  <!-- Header with Gradient -->
+  <div class="bg-linear-to-r from-[#1E4D34] to-[#00B074] px-6 py-8">
+    <div class="max-w-7xl mx-auto">
+      <h1 class="text-3xl font-bold text-white">Account Details</h1>
+      <p class="text-white/80 text-sm mt-1">
+        Manage your personal and account information
+      </p>
+    </div>
   </div>
 
-  <div class="space-y-10 px-7 min-h-screen">
-    <div class="mt-6 flex justify-center">
-      <img src="/icons/profile-2.svg" alt="" />
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6">
+    <!-- Profile Avatar Card -->
+    <div class="bg-white rounded-2xl shadow-xl p-6 mb-8">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+        <div class="flex items-center gap-6">
+          <!-- Avatar with gradient background -->
+          <div class="relative">
+            <div
+              class="w-24 h-24 rounded-full bg-linear-to-br from-[#1E4D34] to-[#00B074] flex items-center justify-center shadow-lg"
+            >
+              <span class="text-white text-4xl font-bold">{{
+                createInitials()
+              }}</span>
+            </div>
+            <button
+              class="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center border-2 border-white hover:bg-[#F5F7FA] transition-colors"
+            >
+              <img
+                src="/icons/camera-profile.svg"
+                alt="camera-profile"
+                class="w-5 h-5"
+              />
+            </button>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-bold text-[#1A202C]">
+              {{ firstName }} {{ lastName }}
+            </h2>
+            <div class="flex items-center gap-2 mt-1">
+              <span
+                class="px-3 py-1 bg-[#E8F5E9] text-[#00B074] rounded-full text-xs font-medium"
+              >
+                {{ accountLevel }}
+              </span>
+              <!-- <span class="text-[#4A5568] text-sm">
+                Active since {{ displayYear }}
+              </span> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 md:mt-0">
+          @if (!hasPin) {
+            <button
+              (click)="openPinSetupModal()"
+              class="bg-linear-to-r from-[#1E4D34] to-[#00B074] text-white px-6 py-3 rounded-xl hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2 font-medium"
+            >
+              <img src="/icons/pin-key.svg" alt="pin-key" class="w-5 h-5" />
+
+              Set Transaction PIN
+            </button>
+          } @else {
+            <button
+              (click)="openPinChangeModal()"
+              class="border-2 border-[#00B074] text-[#00B074] px-6 py-3 rounded-xl hover:bg-[#E8F5E9] transition-all duration-300 flex items-center gap-2 font-medium"
+            >
+              <img src="/icons/pin-key.svg" alt="pin-key" class="w-5 h-5" />
+              Change Transaction PIN
+            </button>
+          }
+        </div>
+      </div>
     </div>
 
-    <div class="flex justify-end">
-      @if (!hasPin) {
-        <button
-          (click)="openPinSetupModal()"
-          class="bg-[#134D3A] text-white px-4 py-2 rounded-lg hover:bg-[#0F3F30] transition flex items-center gap-2"
+    <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-[#4A5568]">Total Transactions</p>
+            <p class="text-2xl font-bold text-[#1A202C] mt-1">
+              {{ totalTransactions }}
+            </p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-[#E8F5E9] flex items-center justify-center"
+          >
+            <img
+              src="/icons/transaction-arrow.svg"
+              alt="transaction-icon "
+              class="w-6 h-6"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-[#4A5568]">Account Age</p>
+            <p class="text-2xl font-bold text-[#1A202C] mt-1">8 months</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-[#E8F5E9] flex items-center justify-center"
+          >
+            <svg
+              class="w-6 h-6 text-[#00B074]"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-6 shadow-sm border border-[#E0E4E8]">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-[#4A5568]">Cards</p>
+            <p class="text-2xl font-bold text-[#1A202C] mt-1">0</p>
+          </div>
+          <div
+            class="w-12 h-12 rounded-full bg-[#E8F5E9] flex items-center justify-center"
+          >
+            <img src="/icons/card.svg" alt="transaction-card" class="w-6 h-6" />
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- Two Column Info Cards -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Profile Details Card -->
+      <div
+        class="bg-white rounded-2xl shadow-lg border border-[#E0E4E8] overflow-hidden"
+      >
+        <div class="bg-linear-to-r from-[#1E4D34] to-[#00B074] px-6 py-4">
+          <h2 class="text-white font-bold text-lg flex items-center gap-2">
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              ></path>
+            </svg>
+            Profile Information
+          </h2>
+        </div>
+
+        <div class="p-6">
+          <div class="space-y-4">
+            <div class="flex items-center py-2 border-b border-[#E0E4E8]">
+              <span class="w-32 text-sm font-medium text-[#4A5568]"
+                >Full Name</span
+              >
+              <span class="flex-1 text-[#1A202C] font-medium"
+                >{{ firstName }} {{ lastName }}</span
+              >
+            </div>
+
+            <div class="flex items-center py-2 border-b border-[#E0E4E8]">
+              <span class="w-32 text-sm font-medium text-[#4A5568]"
+                >Email Address</span
+              >
+              <span class="flex-1 text-[#1A202C]">{{ email }}</span>
+            </div>
+
+            <div class="flex items-center py-2 border-b border-[#E0E4E8]">
+              <span class="w-32 text-sm font-medium text-[#4A5568]"
+                >Phone Number</span
+              >
+              <span class="flex-1 text-[#1A202C]">{{ phoneNumber }}</span>
+            </div>
+
+            <div class="flex items-center py-2">
+              <span class="w-32 text-sm font-medium text-[#4A5568]"
+                >Account Level</span
+              >
+              <span
+                class="px-3 py-1 bg-[#E8F5E9] text-[#00B074] rounded-full text-xs font-medium"
+              >
+                {{ accountLevel }}
+              </span>
+            </div>
+          </div>
+
+          <!-- <button
+            class="mt-6 text-[#00B074] hover:text-[#1E4D34] text-sm font-medium flex items-center gap-1 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+              ></path>
+            </svg>
+            Edit Profile
+          </button> -->
+        </div>
+      </div>
+
+      <!-- Account Details Card -->
+      <div
+        class="bg-linear-to-br from-[#1E4D34] to-[#00B074] rounded-2xl shadow-lg overflow-hidden"
+      >
+        <div class="px-6 py-4 bg-black/10">
+          <h2 class="text-white font-bold text-lg flex items-center gap-2">
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+              ></path>
+            </svg>
+            Account Information
+          </h2>
+        </div>
+
+        <div class="p-6">
+          <div class="space-y-4">
+            <div>
+              <p class="text-white/60 text-xs uppercase tracking-wider mb-1">
+                Bank Name
+              </p>
+              <p class="text-white font-medium text-lg">{{ bankName }}</p>
+            </div>
+
+            <div>
+              <p class="text-white/60 text-xs uppercase tracking-wider mb-1">
+                Account Name
+              </p>
+              <p class="text-white font-medium">{{ accountName }}</p>
+            </div>
+
+            <div class="flex items-end justify-between">
+              <div>
+                <p class="text-white/60 text-xs uppercase tracking-wider mb-1">
+                  Account Number
+                </p>
+                <p class="text-white font-bold text-2xl tracking-wider">
+                  {{ accountNumber }}
+                </p>
+              </div>
+
+              <button
+                class="bg-white/20 hover:bg-white/30 p-3 rounded-xl transition-colors"
+              >
+                <svg
+                  class="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Footer -->
+        <!-- <div class="px-6 py-4 bg-black/10 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <span class="text-white/80 text-xs">Active Account</span>
+          </div>
+          <span class="text-white/60 text-xs">Verified ✓</span>
+        </div> -->
+      </div>
+    </div>
+
+    <!-- Security Section -->
+    <div
+      class="mt-8 bg-white rounded-2xl shadow-lg border border-[#E0E4E8] p-6"
+    >
+      <h3 class="text-lg font-bold text-[#1A202C] mb-4 flex items-center gap-2">
+        <svg
+          class="w-5 h-5 text-[#00B074]"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+          ></path>
+        </svg>
+        Security Settings
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          class="flex items-center justify-between p-4 bg-[#F5F7FA] rounded-xl"
+        >
+          <div>
+            <p class="font-medium text-[#1A202C]">Transaction PIN</p>
+            <p class="text-sm text-[#4A5568]">
+              {{ hasPin ? "PIN is set" : "No PIN set" }}
+            </p>
+          </div>
+          @if (hasPin) {
+            <span
+              class="px-3 py-1 bg-green-100 text-green-600 rounded-full text-xs font-medium"
+              >Active</span
+            >
+          }
+        </div>
+
+        <div
+          class="flex items-center justify-between p-4 bg-[#F5F7FA] rounded-xl"
+        >
+          <div>
+            <p class="font-medium text-[#1A202C]">Two-Factor Authentication</p>
+            <p class="text-sm text-[#4A5568]">
+              Add extra security to your account
+            </p>
+          </div>
+          <button
+            class="px-4 py-2 bg-[#00B074] text-white rounded-lg text-sm font-medium hover:bg-[#1E4D34] transition-colors"
+          >
+            Enable
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <!-- <div class="mt-8 mb-10">
+      <details class="group">
+        <summary
+          class="flex items-center gap-2 text-[#FF6B6B] cursor-pointer hover:text-[#FF5252] transition-colors"
         >
           <svg
             class="w-5 h-5"
@@ -26,74 +373,25 @@
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             ></path>
           </svg>
-          Set Transaction PIN
-        </button>
-      } @else {
-        <button
-          (click)="openPinChangeModal()"
-          class="bg-[#1E4D3A] text-white px-4 py-2 rounded-lg hover:bg-[#0F3F30] transition flex items-center gap-2"
+          <span class="font-medium">Danger Zone</span>
+        </summary>
+        <div
+          class="mt-4 p-4 border border-[#FF6B6B]/30 rounded-xl bg-[#FFF1F1]"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <p class="text-sm text-[#FF6B6B] mb-3">
+            Permanently delete your account and all associated data
+          </p>
+          <button
+            class="px-4 py-2 bg-[#FF6B6B] text-white rounded-lg text-sm font-medium hover:bg-[#FF5252] transition-colors"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
-            ></path>
-          </svg>
-          Change Transaction PIN
-        </button>
-      }
-    </div>
-
-    <div class="flex gap-4">
-      <div
-        class="bg-[#EFEFEF] rounded-2xl p-4 w-full border border-[#BFC5C9] shadow-md shadow-[#1E4D3A]/20"
-      >
-        <div class="space-y-3">
-          <h2 class="text-[#0E0E10] text-lg font-bold">PROFILE DETAILS</h2>
-
-          <p class="text-[#0E0E10]">
-            <span class="font-bold">Name: </span>{{ firstName }} {{ lastName }}
-          </p>
-          <p class="text-[#0E0E10]">
-            <span class="font-bold">Email: </span>{{ email }}
-          </p>
-          <p class="text-[#0E0E10]">
-            <span class="font-bold">Phone: </span>{{ phoneNumber }}
-          </p>
-          <p class="text-[#0E0E10]">
-            <span class="font-bold">Account Level: </span>{{ accountLevel }}
-          </p>
-          <p></p>
+            Delete Account
+          </button>
         </div>
-      </div>
-
-      <div
-        class="border-2 border-[#1E4D3A] bg-[#1E4d3A] w-full rounded-2xl p-4"
-      >
-        <div class="space-y-3">
-          <h2 class="text-[#EFEFEF] text-lg font-bold">ACCOUNT DETAILS</h2>
-          <p class="text-[#EFEFEF]">
-            <span class="font-bold">Bank Name: </span>{{ bankName }}
-          </p>
-          <p class="text-[#EFEFEF]">
-            <span class="font-bold">Account Name: </span>{{ accountName }}
-          </p>
-          <p class="text-[#EFEFEF]">
-            <span class="font-bold">Account Number: </span>{{ accountNumber }}
-          </p>
-        </div>
-      </div>
-    </div>
+      </details>
+    </div> -->
   </div>
 </div>
 
