@@ -57,21 +57,23 @@
 </div>
 
 <!-- Mobile Side Navigation Drawer (only shows when toggled) -->
-<div
-  class="fixed inset-0 z-50 md:hidden transition-opacity duration-300"
-  [class.opacity-0]="!mobileNavOpen"
-  [class.opacity-100]="mobileNavOpen"
-  [class.pointer-events-none]="!mobileNavOpen"
->
-  <!-- Backdrop -->
-  <div class="absolute inset-0 bg-black/50" (click)="toggleMobileNav()"></div>
-
-  <!-- Drawer -->
+@if (showNav) {
   <div
-    class="absolute left-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out"
-    [class.-translate-x-full]="!mobileNavOpen"
-    [class.translate-x-0]="mobileNavOpen"
+    class="fixed inset-0 z-50 md:hidden transition-opacity duration-300"
+    [class.opacity-0]="!mobileNavOpen"
+    [class.opacity-100]="mobileNavOpen"
+    [class.pointer-events-none]="!mobileNavOpen"
   >
-    <app-app-nav></app-app-nav>
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50" (click)="toggleMobileNav()"></div>
+
+    <!-- Drawer -->
+    <div
+      class="absolute left-0 top-0 h-full w-64 bg-white transform transition-transform duration-300 ease-in-out"
+      [class.-translate-x-full]="!mobileNavOpen"
+      [class.translate-x-0]="mobileNavOpen"
+    >
+      <app-app-nav></app-app-nav>
+    </div>
   </div>
-</div>
+}
